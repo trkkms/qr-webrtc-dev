@@ -1,0 +1,37 @@
+{
+  "name": "qr-webrtc",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/core": "^11.0.0",
+    "@emotion/react": "^11.5.0",
+    "classnames": "^2.3.1",
+    "fp-ts": "^2.11.5",
+    "immer": "^9.0.6",
+    "io-ts": "^2.2.16",
+    "jotai": "^1.4.3",
+    "jsqr": "^1.4.0",
+    "nanoid": "^3.1.30",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
+    "@vitejs/plugin-react": "^1.0.0",
+    "eslint": "^8.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-react": "^7.27.0",
+    "prettier": "^2.4.1",
+    "typescript": "^4.5.0-beta",
+    "vite": "^2.6.4",
+    "vite-plugin-pwa": "^0.11.5"
+  }
+}
