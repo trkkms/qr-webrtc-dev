@@ -16,7 +16,10 @@ export default defineConfig({
         display: 'standalone',
         scope: '/qr-webrtc/',
         start_url: '/qr-webrtc/',
-        icons: [{ src: 'icons/48x48.png', sizes: '48x48', type: 'image/png' }],
+        icons: [
+          { src: 'icons/48x48.png', sizes: '48x48', type: 'image/png', purpose: 'any' },
+          { src: 'icons/48x48.png', sizes: '144x144', type: 'image/png', purpose: 'any' },
+        ],
       },
     }),
   ],
