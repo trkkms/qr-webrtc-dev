@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/qr-webrtc/sw.js', { scope: '/qr-webrtc/' })})}

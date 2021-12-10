@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/qr-webrtc/',
   plugins: [
     react(),
     VitePWA({
@@ -23,5 +24,8 @@ export default defineConfig({
       src: path.resolve(__dirname, 'src'),
       wasm: path.resolve(__dirname, 'wasm/pkg'),
     },
+  },
+  build: {
+    outDir: 'docs',
   },
 });
