@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "wasm": "cd wasm && wasm-pack build --release --target web && cd ..",
+    "build": "npm run wasm && tsc && vite build",
     "serve": "vite preview"
   },
   "dependencies": {
