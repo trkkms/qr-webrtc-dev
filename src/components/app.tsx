@@ -10,7 +10,7 @@ const App = () => {
   const mode = useAtomValue(modeAtom);
   const setMode = useUpdateAtom(modeAtom);
   useLayoutEffect(() => {
-    init().catch((e) => {
+    init().catch((e: unknown) => {
       console.error(e);
     });
     const params = new URLSearchParams(window.location.hash.substring(1));

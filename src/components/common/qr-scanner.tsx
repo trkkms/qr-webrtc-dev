@@ -34,7 +34,6 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
         },
       });
       video.srcObject = stream;
-      video.volume = 0;
       await video.play();
       const scan = function _scan() {
         const canvas = canvasRef.current;
