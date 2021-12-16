@@ -19,7 +19,7 @@ export const initializeGuest = async (
   const [setChannel, getChannel] = deferredPromise<RTCDataChannel>();
   const createHostPeer = async () => {
     const peer = new RTCPeerConnection({ iceServers: [] });
-    const cloneStream = localStream.clone();
+    const cloneStream = localStream;
     peer.ondatachannel = (ev) => {
       logger.info('data channel established');
       setChannel(ev.channel);
@@ -27,7 +27,7 @@ export const initializeGuest = async (
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track);
     }
-    attachTrackEvent(peer, context, output);
+    attachTrackEvent(peer, context, output, logger);
 
     return peer;
   };
@@ -57,7 +57,7 @@ export const initializeGuest = async (
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track);
     }
-    attachTrackEvent(peer, context, output);
+    attachTrackEvent(peer, context, output, logger);
   };
   const signalService = createGuestSignalService(guestName, getChannel, preparePeer, logger);
   const close = () => host.close();

@@ -35,7 +35,7 @@ export const initializeHost = async (
       logger.info(`${id.slice(0, 5)} / connection state change: ${peer.connectionState}`);
       onStateChange();
     };
-    const cloneStream = localStream.clone();
+    const cloneStream = localStream;
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track, cloneStream);
     }
@@ -49,7 +49,7 @@ export const initializeHost = async (
     data.onmessage = (ev) => {
       onMessage(id, JSON.parse(ev.data));
     };
-    attachTrackEvent(peer, context, output);
+    attachTrackEvent(peer, context, output, logger);
     await peer.setLocalDescription(await peer.createOffer());
     const sdp = await new Promise<string>((resolve) => {
       peer.onicecandidate = (ev) => {
