@@ -25,17 +25,16 @@ export const initializeHost = async (
     const id = nanoid();
     const [setName, getName] = deferredPromise<string>();
     const peer = new RTCPeerConnection({ iceServers: [] });
-    peer.onconnectionstatechange = () => {
-      logger.info(`${id.slice(0, 5)} / connection state change: ${peer.connectionState}`);
-      onStateChange();
-    };
     const cloneStream = localStream.clone();
     attachStreamToDummyAudio(cloneStream);
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track, cloneStream);
     }
     attachTrackEvent(peer, context, output, logger, playAudio);
-
+    peer.onconnectionstatechange = () => {
+      logger.info(`${id.slice(0, 5)} / connection state change: ${peer.connectionState}`);
+      onStateChange();
+    };
     const data = peer.createDataChannel('host-to-guest');
     const [setOpenChannel, getOpenChannel] = deferredPromise<RTCDataChannel>();
     data.onopen = () => {

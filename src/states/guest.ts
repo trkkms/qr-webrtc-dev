@@ -21,4 +21,4 @@ export interface Guest05 {
   stage: 5;
 }
 export type GuestStage = Guest01 | Guest02 | Guest03 | Guest04 | Guest05;
-export const guestStageAtom = atomWithImmer<GuestStage[]>([{ stage: 1 }]);
+export const guestStageAtom = atomWithImmer<GuestStage[]>([]);

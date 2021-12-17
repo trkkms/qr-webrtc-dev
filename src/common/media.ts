@@ -21,6 +21,7 @@ export const attachTrackEvent = (
     peer.ontrack = (ev) => {
       logger.info('ontrack event detected');
       for (const stream of ev.streams) {
+        logger.info('loop on stream');
         attachStreamToDummyAudio(stream);
         const src = context.createMediaStreamSource(stream);
         src.connect(dest);

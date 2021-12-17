@@ -2,10 +2,11 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import { GuestService, initializeGuest } from 'src/services/guest-service';
-import { useLogger } from 'src/states/app';
+import { startAtom, useLogger } from 'src/states/app';
 import { useTheme } from 'src/theme';
 import { useAtom } from 'jotai';
-import { guestNameAtom } from 'src/states/guest';
+import { guestNameAtom, guestStageAtom } from 'src/states/guest';
+import { useUpdateAtom } from 'jotai/utils';
 
 namespace Guest00Init {
   export interface Props {
@@ -17,7 +18,9 @@ namespace Guest00Init {
 const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
   const logger = useLogger();
   const { color } = useTheme();
+  const setStart = useUpdateAtom(startAtom);
   const [name, setGuestName] = useAtom(guestNameAtom);
+  const updateStages = useUpdateAtom(guestStageAtom);
   return (
     <div
       css={css({
@@ -73,6 +76,10 @@ const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
             onClick={async () => {
               const service = await initializeGuest(playAudio, logger, name);
               setService(service);
+              setStart(true);
+              updateStages((stages) => {
+                stages.push({ stage: 1 });
+              });
             }}
           >
             接続開始

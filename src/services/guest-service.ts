@@ -55,6 +55,7 @@ export const initializeGuest = async (
   };
   const preparePeer = (peer: RTCPeerConnection) => {
     const cloneStream = localStream.clone();
+    attachStreamToDummyAudio(cloneStream);
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track);
     }
