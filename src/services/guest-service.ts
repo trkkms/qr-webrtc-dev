@@ -24,9 +24,10 @@ export const initializeGuest = async (
       logger.info('data channel established');
       setChannel(ev.channel);
     };
-    for (const track of cloneStream.getTracks()) {
-      peer.addTrack(track);
-    }
+    // for (const track of cloneStream.getTracks()) {
+    //   peer.addTrack(track);
+    // }
+    (peer as any).addStream(cloneStream);
     attachTrackEvent(peer, context, output, logger, playAudio);
 
     return peer;

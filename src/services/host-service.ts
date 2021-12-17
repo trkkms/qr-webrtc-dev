@@ -36,9 +36,10 @@ export const initializeHost = async (
       onStateChange();
     };
     const cloneStream = localStream;
-    for (const track of cloneStream.getTracks()) {
-      peer.addTrack(track, cloneStream);
-    }
+    // for (const track of cloneStream.getTracks()) {
+    //   peer.addTrack(track, cloneStream);
+    // }
+    (peer as any).addStream(cloneStream);
 
     const data = peer.createDataChannel('host-to-guest');
     const [setOpenChannel, getOpenChannel] = deferredPromise<RTCDataChannel>();
