@@ -29,7 +29,7 @@ const Header = () => {
         background: color.background.light,
       })}
     >
-      <span>QR WebRTC${version ? ` ${version}` : ''}</span>
+      <span>QR WebRTC{version ? ` -${version}` : ''}</span>
       <ModeChanger />
     </header>
   );

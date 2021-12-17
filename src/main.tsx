@@ -4,7 +4,9 @@ import App from 'src/components/app';
 import Providers from 'src/components/providers';
 import { registerSW } from 'virtual:pwa-register';
 
-registerSW();
+registerSW({
+  onNeedRefresh() {},
+});
 
 ReactDOM.render(
   <React.StrictMode>
