@@ -18,22 +18,27 @@ export const initializeGuest = async (
   attachStreamToDummyAudio(localStream);
   await playAudio(output.stream);
   const [setChannel, getChannel] = deferredPromise<RTCDataChannel>();
+  const [setHost, getHost] = deferredPromise<RTCPeerConnection>();
   const createHostPeer = async () => {
     const peer = new RTCPeerConnection({ iceServers: [] });
     const cloneStream = localStream.clone();
     attachStreamToDummyAudio(cloneStream);
     for (const track of cloneStream.getTracks()) {
-      peer.addTrack(track);
+      peer.addTrack(track, cloneStream);
     }
     attachTrackEvent(peer, context, output, logger, playAudio);
+    peer.onconnectionstatechange = () => {
+      logger.info(`host connection state change: ${peer.connectionState}`);
+    };
     peer.ondatachannel = (ev) => {
       logger.info('data channel established');
       setChannel(ev.channel);
     };
+    setHost(peer);
     return peer;
   };
-  const host = await createHostPeer();
   const createAnswer = async (offer: string) => {
+    const host = await getHost();
     await host.setRemoteDescription({ type: 'offer', sdp: offer });
     const answer = await host.createAnswer();
     await host.setLocalDescription(answer);
@@ -45,7 +50,8 @@ export const initializeGuest = async (
       };
     });
   };
-  const setOnConnect = (f: () => void) => {
+  const setOnConnect = async (f: () => void) => {
+    const host = await getHost();
     host.onconnectionstatechange = () => {
       if (host.connectionState === 'connected') {
         logger.info('connected to host');
@@ -62,8 +68,8 @@ export const initializeGuest = async (
     attachTrackEvent(peer, context, output, logger, playAudio);
   };
   const signalService = createGuestSignalService(guestName, getChannel, preparePeer, logger);
-  const close = () => host.close();
-  return { host, createAnswer, setOnConnect, close, signalService };
+  const close = async () => (await getHost()).close();
+  return { createAnswer, setOnConnect, close, signalService, createHostPeer };
 };
 
 export type GuestService = Awaited<ReturnType<typeof initializeGuest>>;

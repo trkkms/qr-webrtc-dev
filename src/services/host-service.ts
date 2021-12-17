@@ -44,7 +44,7 @@ export const initializeHost = async (
     data.onmessage = (ev) => {
       onMessage(id, JSON.parse(ev.data));
     };
-    await peer.setLocalDescription(await peer.createOffer());
+    await peer.setLocalDescription(await peer.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: false }));
     const sdp = await new Promise<string>((resolve) => {
       peer.onicecandidate = (ev) => {
         if (!ev.candidate && peer.localDescription) {

@@ -27,6 +27,7 @@ const Guest02Offer2 = ({ stage, service }: Guest02Offer2.Props) => {
     setOffer(sdp);
     if (sdp != undefined) {
       setOffer(sdp);
+      await service.createHostPeer();
       const answer = await service.createAnswer(sdp);
       updateStage((prev) => {
         prev.push({ stage: 3, sdp: answer });
