@@ -55,7 +55,9 @@ export const createGuestSignalService = (
           const peer = new RTCPeerConnection({ iceServers: [] });
           preparePeer(peer);
           peers.set(other, peer);
-          await peer.setLocalDescription(await peer.createOffer());
+          await peer.setLocalDescription(
+            await peer.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: false }),
+          );
           const sdp = await new Promise<string>((resolve) => {
             peer.onicecandidate = (ev) => {
               if (!ev.candidate && peer.localDescription) {

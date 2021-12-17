@@ -63,7 +63,7 @@ export const initializeGuest = async (
     const cloneStream = localStream.clone();
     attachStreamToDummyAudio(cloneStream);
     for (const track of cloneStream.getTracks()) {
-      peer.addTrack(track);
+      peer.addTrack(track, cloneStream);
     }
     attachTrackEvent(peer, context, output, logger, playAudio);
   };

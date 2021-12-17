@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import jsQR, { QRCode } from 'jsqr';
 import { useLogger } from 'src/states/app';
+import { css } from '@emotion/react';
 
 namespace QrScanner {
   export interface Props {
@@ -80,8 +81,8 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
     };
   }, []);
   return (
-    <div>
-      <canvas ref={canvasRef} />
+    <div css={css({ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' })}>
+      <canvas css={css({ width: '80%' })} ref={canvasRef} />
     </div>
   );
 };
