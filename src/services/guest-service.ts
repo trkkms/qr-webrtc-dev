@@ -13,7 +13,7 @@ export const initializeGuest = async (
   const output = context.createMediaStreamDestination();
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: false,
-    audio: { echoCancellation: true },
+    audio: { latency: 0.01, echoCancellation: true },
   });
   attachStreamToDummyAudio(localStream);
   await playAudio(output.stream);
@@ -21,16 +21,15 @@ export const initializeGuest = async (
   const createHostPeer = async () => {
     const peer = new RTCPeerConnection({ iceServers: [] });
     const cloneStream = localStream.clone();
-    peer.ondatachannel = (ev) => {
-      logger.info('data channel established');
-      setChannel(ev.channel);
-    };
     attachStreamToDummyAudio(cloneStream);
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track);
     }
     attachTrackEvent(peer, context, output, logger, playAudio);
-
+    peer.ondatachannel = (ev) => {
+      logger.info('data channel established');
+      setChannel(ev.channel);
+    };
     return peer;
   };
   const host = await createHostPeer();

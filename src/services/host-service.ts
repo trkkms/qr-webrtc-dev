@@ -16,17 +16,10 @@ export const initializeHost = async (
   const output = context.createMediaStreamDestination();
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: false,
-    audio: { echoCancellation: true },
+    audio: { latency: 0.01, echoCancellation: true },
   });
   attachStreamToDummyAudio(localStream);
   await playAudio(output.stream);
-  const oscillateLocal = () => {
-    const oscillator = context.createOscillator();
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 440;
-    oscillator.connect(output);
-    oscillator.start();
-  };
   const onMessage = createHostSignalService(peers, logger);
   const createPeer = async () => {
     const id = nanoid();
@@ -97,7 +90,6 @@ export const initializeHost = async (
     createPeer,
     getPeer,
     getPeers,
-    oscillateLocal,
   };
 };
 
