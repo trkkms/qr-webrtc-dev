@@ -1,11 +1,22 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import ModeChanger from 'src/components/common/navigations/mode-changer';
 import { useTheme } from 'src/theme';
 
 const Header = () => {
   const { color } = useTheme();
+  const [version, setVersion] = useState('');
+  useEffect(() => {
+    const scripts = Array.from(document.getElementsByTagName('script'));
+    for (const script of scripts) {
+      const m = /index\.([^.]+)\.js$/.exec(script.src);
+      if (m) {
+        setVersion(m[1]);
+        break;
+      }
+    }
+  }, []);
   return (
     <header
       css={css({
@@ -18,7 +29,7 @@ const Header = () => {
         background: color.background.light,
       })}
     >
-      <span>QR WebRTC</span>
+      <span>QR WebRTC${version ? ` ${version}` : ''}</span>
       <ModeChanger />
     </header>
   );

@@ -35,11 +35,12 @@ export const initializeHost = async (
       logger.info(`${id.slice(0, 5)} / connection state change: ${peer.connectionState}`);
       onStateChange();
     };
-    const cloneStream = localStream;
+    const cloneStream = localStream.clone();
     // for (const track of cloneStream.getTracks()) {
     //   peer.addTrack(track, cloneStream);
     // }
     (peer as any).addStream(cloneStream);
+    attachTrackEvent(peer, context, output, logger, playAudio);
 
     const data = peer.createDataChannel('host-to-guest');
     const [setOpenChannel, getOpenChannel] = deferredPromise<RTCDataChannel>();
@@ -50,7 +51,6 @@ export const initializeHost = async (
     data.onmessage = (ev) => {
       onMessage(id, JSON.parse(ev.data));
     };
-    attachTrackEvent(peer, context, output, logger, playAudio);
     await peer.setLocalDescription(await peer.createOffer());
     const sdp = await new Promise<string>((resolve) => {
       peer.onicecandidate = (ev) => {
