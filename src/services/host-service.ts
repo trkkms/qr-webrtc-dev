@@ -49,7 +49,7 @@ export const initializeHost = async (
     data.onmessage = (ev) => {
       onMessage(id, JSON.parse(ev.data));
     };
-    attachTrackEvent(peer, context, output, logger);
+    attachTrackEvent(peer, context, output, logger, playAudio);
     await peer.setLocalDescription(await peer.createOffer());
     const sdp = await new Promise<string>((resolve) => {
       peer.onicecandidate = (ev) => {

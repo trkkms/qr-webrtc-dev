@@ -5,6 +5,7 @@ export const attachTrackEvent = (
   context: AudioContext,
   dest: MediaStreamAudioDestinationNode,
   logger: AppLogger,
+  playAudio: (stream: MediaStream) => Promise<void>,
 ): void => {
   if ('ontrack' in peer) {
     logger.info('set ontrack event');
@@ -13,6 +14,9 @@ export const attachTrackEvent = (
       for (const stream of ev.streams) {
         const src = context.createMediaStreamSource(stream);
         src.connect(dest);
+        playAudio(dest.stream).then(() => {
+          logger.info('update stream');
+        });
       }
     };
   } else {
@@ -22,6 +26,7 @@ export const attachTrackEvent = (
       logger.info('onaddstream event detected');
       const src = context.createMediaStreamSource(ev.stream);
       src.connect(dest);
+      playAudio(dest.stream);
     };
   }
 };

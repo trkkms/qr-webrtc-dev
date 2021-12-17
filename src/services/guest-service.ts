@@ -5,7 +5,7 @@ import { createGuestSignalService } from 'src/services/signal-service';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const initializeGuest = async (
-  playAudio: (stream: MediaStream) => void,
+  playAudio: (stream: MediaStream) => Promise<void>,
   logger: AppLogger,
   guestName: string,
 ) => {
@@ -27,7 +27,7 @@ export const initializeGuest = async (
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track);
     }
-    attachTrackEvent(peer, context, output, logger);
+    attachTrackEvent(peer, context, output, logger, playAudio);
 
     return peer;
   };
@@ -57,7 +57,7 @@ export const initializeGuest = async (
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track);
     }
-    attachTrackEvent(peer, context, output, logger);
+    attachTrackEvent(peer, context, output, logger, playAudio);
   };
   const signalService = createGuestSignalService(guestName, getChannel, preparePeer, logger);
   const close = () => host.close();
