@@ -16,7 +16,7 @@ export const initializeHost = async (
   const output = context.createMediaStreamDestination();
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: false,
-    audio: { latency: 0.01, echoCancellation: true },
+    audio: { echoCancellation: true },
   });
   await playAudio(output.stream);
   const oscillateLocal = () => {
