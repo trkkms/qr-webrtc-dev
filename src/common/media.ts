@@ -1,5 +1,14 @@
 import { AppLogger } from 'src/states/app';
 
+export const attachStreamToDummyAudio = (stream: MediaStream): void => {
+  let a: HTMLAudioElement | null = new Audio();
+  a.muted = true;
+  a.srcObject = stream;
+  a.addEventListener('canplaythrough', () => {
+    a = null;
+  });
+};
+
 export const attachTrackEvent = (
   peer: RTCPeerConnection,
   context: AudioContext,
@@ -12,12 +21,7 @@ export const attachTrackEvent = (
     peer.ontrack = (ev) => {
       logger.info('ontrack event detected');
       for (const stream of ev.streams) {
-        let a: HTMLAudioElement | null = new Audio();
-        a.muted = true;
-        a.srcObject = stream;
-        a.addEventListener('canplaythrough', () => {
-          a = null;
-        });
+        attachStreamToDummyAudio(stream);
         const src = context.createMediaStreamSource(stream);
         src.connect(dest);
         playAudio(dest.stream).then(() => {
@@ -30,12 +34,7 @@ export const attachTrackEvent = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (peer as any).onaddstream = (ev: { stream: MediaStream }) => {
       logger.info('onaddstream event detected');
-      let a: HTMLAudioElement | null = new Audio();
-      a.muted = true;
-      a.srcObject = ev.stream;
-      a.addEventListener('canplaythrough', () => {
-        a = null;
-      });
+      attachStreamToDummyAudio(ev.stream);
       const src = context.createMediaStreamSource(ev.stream);
       src.connect(dest);
       playAudio(dest.stream).then(() => {

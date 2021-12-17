@@ -1,5 +1,5 @@
 import { AppLogger } from 'src/states/app';
-import { attachTrackEvent } from 'src/common/media';
+import { attachStreamToDummyAudio, attachTrackEvent } from 'src/common/media';
 import { deferredPromise } from 'src/common/util';
 import { createGuestSignalService } from 'src/services/signal-service';
 
@@ -15,6 +15,7 @@ export const initializeGuest = async (
     video: false,
     audio: { echoCancellation: true },
   });
+  attachStreamToDummyAudio(localStream);
   await playAudio(output.stream);
   const [setChannel, getChannel] = deferredPromise<RTCDataChannel>();
   const createHostPeer = async () => {
@@ -24,10 +25,10 @@ export const initializeGuest = async (
       logger.info('data channel established');
       setChannel(ev.channel);
     };
-    // for (const track of cloneStream.getTracks()) {
-    //   peer.addTrack(track);
-    // }
-    (peer as any).addStream(cloneStream);
+    attachStreamToDummyAudio(cloneStream);
+    for (const track of cloneStream.getTracks()) {
+      peer.addTrack(track);
+    }
     attachTrackEvent(peer, context, output, logger, playAudio);
 
     return peer;

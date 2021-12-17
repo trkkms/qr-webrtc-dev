@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import { AppLogger } from 'src/states/app';
-import { attachTrackEvent } from 'src/common/media';
+import { attachStreamToDummyAudio, attachTrackEvent } from 'src/common/media';
 import { deferredPromise } from 'src/common/util';
 import { createHostSignalService } from 'src/services/signal-service';
 
@@ -18,6 +18,7 @@ export const initializeHost = async (
     video: false,
     audio: { echoCancellation: true },
   });
+  attachStreamToDummyAudio(localStream);
   await playAudio(output.stream);
   const oscillateLocal = () => {
     const oscillator = context.createOscillator();
@@ -36,10 +37,10 @@ export const initializeHost = async (
       onStateChange();
     };
     const cloneStream = localStream.clone();
-    // for (const track of cloneStream.getTracks()) {
-    //   peer.addTrack(track, cloneStream);
-    // }
-    (peer as any).addStream(cloneStream);
+    attachStreamToDummyAudio(cloneStream);
+    for (const track of cloneStream.getTracks()) {
+      peer.addTrack(track, cloneStream);
+    }
     attachTrackEvent(peer, context, output, logger, playAudio);
 
     const data = peer.createDataChannel('host-to-guest');
