@@ -7,6 +7,7 @@ import { useTheme } from 'src/theme';
 import { useAtom } from 'jotai';
 import { guestNameAtom, guestStageAtom } from 'src/states/guest';
 import { useUpdateAtom } from 'jotai/utils';
+import { useUpdateConnectionState } from 'src/common/hooks/util';
 
 namespace Guest00Init {
   export interface Props {
@@ -21,6 +22,7 @@ const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
   const setStart = useUpdateAtom(startAtom);
   const [name, setGuestName] = useAtom(guestNameAtom);
   const updateStages = useUpdateAtom(guestStageAtom);
+  const onStateChange = useUpdateConnectionState();
   return (
     <div
       css={css({
@@ -74,7 +76,7 @@ const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
               width: '14rem',
             })}
             onClick={async () => {
-              const service = await initializeGuest(playAudio, logger, name);
+              const service = await initializeGuest(playAudio, logger, name, onStateChange);
               setService(service);
               setStart(true);
               updateStages((stages) => {

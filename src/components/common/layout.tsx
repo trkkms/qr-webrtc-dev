@@ -15,7 +15,7 @@ const Layout = ({ children }: Layout.Props) => {
   const { color } = useTheme();
   return (
     <>
-      <div css={css({ display: 'grid', width: '100%', height: '100vh', gridTemplateRows: '2.5rem 1fr auto' })}>
+      <div css={css({ display: 'grid', width: '100%', height: '100%', gridTemplateRows: '2.5rem 1fr auto' })}>
         <div css={css({ height: '100%' })}>
           <Header />
         </div>
@@ -26,6 +26,9 @@ const Layout = ({ children }: Layout.Props) => {
       </div>
       <Global
         styles={css({
+          'html, body, #root': {
+            height: '100%',
+          },
           '*': {
             boxSizing: 'border-box',
             margin: 0,

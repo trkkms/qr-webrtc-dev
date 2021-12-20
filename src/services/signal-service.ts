@@ -6,13 +6,19 @@ import { AppLogger } from 'src/states/app';
 const acceptGuest = t.type({
   type: t.literal('acceptGuest'),
   guestId: t.string,
-  others: t.array(t.string),
+  others: t.array(
+    t.type({
+      id: t.string,
+      name: t.string,
+    }),
+  ),
 });
 export type AcceptGuest = t.TypeOf<typeof acceptGuest>;
 
 const offer = t.type({
   type: t.literal('offer'),
   from: t.string,
+  name: t.string,
   to: t.string,
   sdp: t.string,
 });
@@ -40,8 +46,10 @@ export const createGuestSignalService = (
   getChannel: () => Promise<RTCDataChannel>,
   preparePeer: (peer: RTCPeerConnection) => void,
   logger: AppLogger,
+  onStateChange: () => void,
 ) => {
-  const peers = new Map<string, RTCPeerConnection>();
+  type GuestPeer = { id: string; name: string; peer: RTCPeerConnection };
+  const peers = new Map<string, GuestPeer>();
   const [setID, getID] = deferredPromise<string>();
   getChannel().then(async (channel) => {
     channel.onmessage = async (ev) => {
@@ -54,7 +62,8 @@ export const createGuestSignalService = (
         for (const other of message.others) {
           const peer = new RTCPeerConnection({ iceServers: [] });
           preparePeer(peer);
-          peers.set(other, peer);
+          const guest: GuestPeer = { peer, id: other.id, name: other.name };
+          peers.set(other.id, guest);
           await peer.setLocalDescription(
             await peer.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: false }),
           );
@@ -65,7 +74,11 @@ export const createGuestSignalService = (
               }
             };
           });
-          offers.push({ type: 'offer', from: id, to: other, sdp });
+          offers.push({ type: 'offer', from: id, to: other.id, name, sdp });
+          peer.onconnectionstatechange = () => {
+            logger.info(`connection state change to ${guest.id}: ${peer.connectionState}`);
+            onStateChange();
+          };
         }
         const accept: AcceptHost = {
           type: 'acceptHost',
@@ -76,13 +89,17 @@ export const createGuestSignalService = (
         channel.send(JSON.stringify(accept));
       }
       if (offer.is(message)) {
-        logger.info('received offer request');
+        logger.info(`received offer from: ${message.from}`);
         const id = await getID();
         const peer = new RTCPeerConnection({ iceServers: [] });
         preparePeer(peer);
-        peers.set(message.from, peer);
+        peers.set(message.from, { id: message.from, peer, name: message.name });
         await peer.setRemoteDescription({ type: 'offer', sdp: message.sdp });
         await peer.setLocalDescription(await peer.createAnswer());
+        peer.onconnectionstatechange = () => {
+          logger.info(`connection state change to ${message.from}: ${peer.connectionState}`);
+          onStateChange();
+        };
         const sdp = await new Promise<string>((resolve) => {
           peer.onicecandidate = (ev) => {
             if (!ev.candidate && peer.localDescription) {
@@ -99,16 +116,20 @@ export const createGuestSignalService = (
         channel.send(JSON.stringify(answer));
       }
       if (answer.is(message)) {
-        logger.info('received answer');
+        logger.info(`received answer from ${message.from}`);
         const peer = peers.get(message.from);
         if (peer == undefined) {
           return;
         }
-        await peer.setRemoteDescription({ type: 'answer', sdp: message.sdp });
+        peer.peer.onconnectionstatechange = () => {
+          logger.info(`connection state change to ${message.from}: ${peer.peer.connectionState}`);
+          onStateChange();
+        };
+        await peer.peer.setRemoteDescription({ type: 'answer', sdp: message.sdp });
       }
     };
   });
-  return {};
+  return { peers };
 };
 
 export const createHostSignalService =

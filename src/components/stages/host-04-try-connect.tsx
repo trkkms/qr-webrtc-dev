@@ -24,7 +24,14 @@ const Host04TryConnect = ({ stage, peer, service }: Host04TryConnect.Props) => {
       const accept: AcceptGuest = {
         type: 'acceptGuest',
         guestId: peer.id,
-        others: Array.from(service.getPeers().keys()).filter((id) => id !== peer.id),
+        others: await Promise.all(
+          Array.from(service.getPeers().values())
+            .filter((other) => other.id !== peer.id)
+            .map(async (peer) => ({
+              id: peer.id,
+              name: await peer.getName(),
+            })),
+        ),
       };
       await peer.sendMessage(accept);
       updateStage(() => {

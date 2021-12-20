@@ -13,10 +13,11 @@ namespace HostStages {
   export interface Props {
     service: HostService;
     peer: HostToGuestPeer;
+    setCurrentPeer: (peer: HostToGuestPeer) => void;
   }
 }
 
-const HostStages = ({ service, peer }: HostStages.Props) => {
+const HostStages = ({ service, peer, setCurrentPeer }: HostStages.Props) => {
   const stages = useAtomValue(hostStageAtom);
   const current = stages[stages.length - 1];
   if (current == undefined) {
@@ -35,7 +36,7 @@ const HostStages = ({ service, peer }: HostStages.Props) => {
     return <Host04TryConnect service={service} stage={current} peer={peer} />;
   }
   if (current.stage === 5) {
-    return <Host05GuestList service={service} />;
+    return <Host05GuestList service={service} setCurrentPeer={setCurrentPeer} />;
   }
   return <></>;
 };

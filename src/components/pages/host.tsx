@@ -30,7 +30,9 @@ const Host = () => {
       })}
     >
       {!service && <Host00Init setService={setService} setCurrentPeer={setCurrentPeer} playAudio={playAudio} />}
-      {service && currentPeer != null && <HostStages service={service} peer={currentPeer} />}
+      {service && currentPeer != null && (
+        <HostStages service={service} peer={currentPeer} setCurrentPeer={setCurrentPeer} />
+      )}
       <AudioControl audioRef={audioRef} />
     </main>
   );

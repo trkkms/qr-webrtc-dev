@@ -3,11 +3,18 @@ import { attachStreamToDummyAudio, attachTrackEvent } from 'src/common/media';
 import { deferredPromise } from 'src/common/util';
 import { createGuestSignalService } from 'src/services/signal-service';
 
+export type PeerVolumeChange = {
+  target: { host: true } | { host: false; id: string };
+  volume: number;
+  muted: boolean;
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const initializeGuest = async (
   playAudio: (stream: MediaStream) => Promise<void>,
   logger: AppLogger,
   guestName: string,
+  onStateChange: () => void,
 ) => {
   const context = new AudioContext();
   const output = context.createMediaStreamDestination();
@@ -67,7 +74,7 @@ export const initializeGuest = async (
     }
     attachTrackEvent(peer, context, output, logger, playAudio);
   };
-  const signalService = createGuestSignalService(guestName, getChannel, preparePeer, logger);
+  const signalService = createGuestSignalService(guestName, getChannel, preparePeer, logger, onStateChange);
   const close = async () => (await getHost()).close();
   return { createAnswer, setOnConnect, close, signalService, createHostPeer };
 };

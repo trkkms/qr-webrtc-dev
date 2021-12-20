@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import Logs from 'src/components/common/navigations/logs';
 import { useTheme } from 'src/theme';
 import { useLogs } from 'src/states/app';
+import VolumeController from 'src/components/common/navigations/volume-controller';
 
 const Footer = () => {
   const [open, setOpen] = useState(false);
@@ -21,8 +22,8 @@ const Footer = () => {
       className={classNames({ open })}
       css={css({
         display: 'grid',
-        height: '1.5rem',
-        gridTemplateRows: '1.5rem 1fr',
+        height: '3.5rem',
+        gridTemplateRows: '2rem 1.5rem 1fr',
         overflow: 'hidden',
         transition: 'all 0.5s',
         '&.open': {
@@ -32,6 +33,16 @@ const Footer = () => {
         color: color.text,
       })}
     >
+      <div
+        css={css({
+          display: 'flex',
+          alignItems: 'center',
+          borderBottom: `1px solid ${color.primary.dark}`,
+          width: '100%',
+        })}
+      >
+        <VolumeController />
+      </div>
       <button
         type="button"
         className={classNames({ error: errorOnTop })}

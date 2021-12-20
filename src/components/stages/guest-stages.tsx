@@ -34,7 +34,7 @@ const GuestStages = ({ service }: GuestStages.Props) => {
     return <Guest04TryConnect />;
   }
   if (current.stage === 5) {
-    return <Guest05ConnectionList />;
+    return <Guest05ConnectionList service={service} />;
   }
   return <></>;
 };

@@ -51,3 +51,19 @@ export const useLogger = (): AppLogger => {
     success: createLogger('success'),
   };
 };
+
+interface VolumeState {
+  mic: {
+    volume: number;
+    muted: boolean;
+  };
+  speaker: {
+    volume: number;
+    muted: boolean;
+  };
+}
+
+export const volumeAtom = atomWithImmer<VolumeState>({
+  mic: { volume: 1, muted: false },
+  speaker: { volume: 1, muted: false },
+});

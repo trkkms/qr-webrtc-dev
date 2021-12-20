@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-import { HostService } from 'src/services/host-service';
+import { HostService, HostToGuestPeer } from 'src/services/host-service';
 import { useTheme } from 'src/theme';
 import Chapter from 'src/components/common/chapter';
 import { useUpdateAtom } from 'jotai/utils';
@@ -11,6 +11,7 @@ import { useConnectionStateDetection } from 'src/common/hooks/util';
 namespace Host05GuestList {
   export interface Props {
     service: HostService;
+    setCurrentPeer: (peer: HostToGuestPeer) => void;
   }
 }
 
@@ -27,7 +28,7 @@ const PromisedText = ({ textP }: PromisedTextProp) => {
   return <>{text ?? ''}</>;
 };
 
-const Host05GuestList = ({ service }: Host05GuestList.Props) => {
+const Host05GuestList = ({ service, setCurrentPeer }: Host05GuestList.Props) => {
   const peers = service.getPeers();
   const updateStage = useUpdateAtom(hostStageAtom);
   useConnectionStateDetection();
@@ -55,6 +56,7 @@ const Host05GuestList = ({ service }: Host05GuestList.Props) => {
             })}
             onClick={async () => {
               const peer = await service.createPeer();
+              setCurrentPeer(peer);
               updateStage(() => [{ stage: 1, sdp: peer.sdp }]);
             }}
           >

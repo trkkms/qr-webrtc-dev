@@ -1,15 +1,29 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { css } from '@emotion/react';
+import { GuestService } from 'src/services/guest-service';
+import { useConnectionStateDetection } from 'src/common/hooks/util';
+import Chapter from 'src/components/common/chapter';
 
 namespace Guest05ConnectionList {
   export interface Props {
-    children?: React.ReactNode | undefined;
+    service: GuestService;
   }
 }
 
-const Guest05ConnectionList = ({ children }: Guest05ConnectionList.Props) => {
-  return <p css={css({ fontSize: 'smaller' })}>{children ?? 'This Component is not implemented yet.'}</p>;
+const Guest05ConnectionList = ({ service }: Guest05ConnectionList.Props) => {
+  const peers = service.signalService.peers;
+  useConnectionStateDetection();
+  return (
+    <Chapter title="接続一覧">
+      <ol>
+        <li>ホスト</li>
+        {Array.from(peers.values()).map((peer) => (
+          <li key={peer.id}>{`${peer.id.slice(0, 6)} ${peer.name}`}</li>
+        ))}
+      </ol>
+    </Chapter>
+  );
 };
 
 export default Guest05ConnectionList;
