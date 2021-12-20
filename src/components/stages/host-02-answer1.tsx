@@ -4,8 +4,11 @@ import { HostToGuestPeer } from 'src/services/host-service';
 import Chapter from 'src/components/common/chapter';
 import QrScanner from 'src/components/common/qr-scanner';
 import BackNextButton from 'src/components/common/back-next-button';
-import { useUpdateAtom } from 'jotai/utils';
 import { hostStageAtom } from 'src/states/host';
+import { cameraStreamAtom, useLogger } from 'src/states/app';
+import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
+import { getVideoStream } from 'src/common/media';
 
 namespace Host02Answer1 {
   export interface Props {
@@ -16,9 +19,11 @@ namespace Host02Answer1 {
 const Host02Answer1 = () => {
   const [halfSDP, setHalfSDP] = useState<number[] | undefined>(undefined);
   const updateStage = useUpdateAtom(hostStageAtom);
+  const [cameraStream, setCameraStream] = useAtom(cameraStreamAtom);
+  const logger = useLogger();
   const onResult = useCallback((code) => {
-    console.log('answer1 received:');
-    console.log(code.binaryData);
+    logger.info('answer1 received:');
+    setCameraStream(undefined);
     setHalfSDP(code.binaryData);
   }, []);
   const onBack = useCallback(() => {
@@ -26,17 +31,18 @@ const Host02Answer1 = () => {
       prev.pop();
     });
   }, []);
-  const onNext = useCallback(() => {
+  const onNext = useCallback(async () => {
     if (halfSDP == null) {
       return;
     }
-    updateStage((prev) => {
+    updateStage(async (prev) => {
       prev.push({ stage: 3, halfAnswer: halfSDP });
     });
+    setCameraStream(await getVideoStream());
   }, [halfSDP]);
   return (
     <Chapter title="2.アンサー受信(前半)">
-      {halfSDP == null && <QrScanner onResult={onResult} />}
+      {halfSDP == null && cameraStream && <QrScanner onResult={onResult} stream={cameraStream} />}
       <BackNextButton
         backTitle="戻る"
         onBack={onBack}

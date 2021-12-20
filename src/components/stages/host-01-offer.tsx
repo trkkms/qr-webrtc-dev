@@ -6,8 +6,9 @@ import { useUpdateAtom } from 'jotai/utils';
 import QrGenerator from 'src/components/common/qr-generator';
 import BackNextButton from 'src/components/common/back-next-button';
 import Chapter from 'src/components/common/chapter';
-import { useLogger } from 'src/states/app';
+import { cameraStreamAtom, useLogger } from 'src/states/app';
 import { useCompressedSDP } from 'src/common/hooks/compress';
+import { getVideoStream } from 'src/common/media';
 
 namespace Host0102Offer {
   export interface Props {
@@ -19,6 +20,7 @@ const Host01Offer = React.memo(function Host01({ stage }: Host0102Offer.Props) {
   const updateStage = useUpdateAtom(hostStageAtom);
   const [part, setPart] = useState<1 | 2>(1);
   const logger = useLogger();
+  const setCameraStream = useUpdateAtom(cameraStreamAtom);
   const onBack = useCallback(() => {
     if (part === 2) {
       setPart(1);
@@ -26,13 +28,14 @@ const Host01Offer = React.memo(function Host01({ stage }: Host0102Offer.Props) {
       updateStage(() => [{ stage: 5 }]);
     }
   }, [part]);
-  const onNext = useCallback(() => {
+  const onNext = useCallback(async () => {
     if (part === 1) {
       setPart(2);
     } else {
       updateStage((prev) => {
         prev.push({ stage: 2 });
       });
+      setCameraStream(await getVideoStream());
     }
   }, [part]);
   const title = part === 1 ? '1.オファー(前半)' : '1.オファー(後半)';

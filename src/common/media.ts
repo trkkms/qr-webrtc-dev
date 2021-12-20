@@ -56,3 +56,13 @@ export const streamWithGain = (context: AudioContext, stream: MediaStream): [(vo
   };
   return [changeVolume, dest.stream];
 };
+
+export const getVideoStream = async (): Promise<MediaStream> =>
+  await navigator.mediaDevices.getUserMedia({
+    audio: false,
+    video: {
+      facingMode: 'environment',
+      width: { ideal: 640 },
+      height: { ideal: 480 },
+    },
+  });

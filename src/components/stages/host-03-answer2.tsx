@@ -7,7 +7,8 @@ import BackNextButton from 'src/components/common/back-next-button';
 import { useUpdateAtom } from 'jotai/utils';
 import { Host03, hostStageAtom } from 'src/states/host';
 import { QRCode } from 'jsqr';
-import { useLogger } from 'src/states/app';
+import { cameraStreamAtom, useLogger } from 'src/states/app';
+import { useAtom } from 'jotai';
 
 namespace Host03Answer2 {
   export interface Props {
@@ -18,10 +19,11 @@ namespace Host03Answer2 {
 const Host03Answer2 = ({ stage }: Host03Answer2.Props) => {
   const [sdp, setSDP] = useState<string | undefined>(undefined);
   const updateStage = useUpdateAtom(hostStageAtom);
+  const [cameraStream, setCameraStream] = useAtom(cameraStreamAtom);
   const logger = useLogger();
   const onResult = useCallback((code: QRCode) => {
-    console.log('answer2 received:');
-    console.log(code.binaryData);
+    logger.info('answer2 received:');
+    setCameraStream(undefined);
     const sdp = inflate(new Uint8Array([...stage.halfAnswer.slice(5), ...code.binaryData.slice(5)]));
     if (sdp != undefined) {
       setSDP(sdp);
@@ -40,7 +42,7 @@ const Host03Answer2 = ({ stage }: Host03Answer2.Props) => {
   }, []);
   return (
     <Chapter title="3.アンサー受信(後半)">
-      {sdp == null && <QrScanner onResult={onResult} />}
+      {sdp == null && cameraStream && <QrScanner onResult={onResult} stream={cameraStream} />}
       <BackNextButton backTitle="戻る" onBack={onBack} />
     </Chapter>
   );

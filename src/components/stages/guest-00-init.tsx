@@ -2,12 +2,13 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import { GuestService, initializeGuest } from 'src/services/guest-service';
-import { startAtom, useLogger } from 'src/states/app';
+import { cameraStreamAtom, startAtom, useLogger } from 'src/states/app';
 import { useTheme } from 'src/theme';
 import { useAtom } from 'jotai';
 import { guestNameAtom, guestStageAtom } from 'src/states/guest';
 import { useUpdateAtom } from 'jotai/utils';
 import { useUpdateConnectionState } from 'src/common/hooks/util';
+import { getVideoStream } from 'src/common/media';
 
 namespace Guest00Init {
   export interface Props {
@@ -23,6 +24,7 @@ const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
   const [name, setGuestName] = useAtom(guestNameAtom);
   const updateStages = useUpdateAtom(guestStageAtom);
   const onStateChange = useUpdateConnectionState();
+  const setCameraStream = useUpdateAtom(cameraStreamAtom);
   return (
     <div
       css={css({
@@ -79,6 +81,7 @@ const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
               const service = await initializeGuest(playAudio, logger, name, onStateChange);
               setService(service);
               setStart(true);
+              setCameraStream(await getVideoStream());
               updateStages((stages) => {
                 stages.push({ stage: 1 });
               });

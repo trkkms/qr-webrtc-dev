@@ -67,3 +67,5 @@ export const volumeAtom = atomWithImmer<VolumeState>({
   mic: { volume: 1, muted: false },
   speaker: { volume: 1, muted: false },
 });
+
+export const cameraStreamAtom = atom<MediaStream | undefined>(undefined);

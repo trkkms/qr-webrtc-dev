@@ -7,10 +7,11 @@ import { css } from '@emotion/react';
 namespace QrScanner {
   export interface Props {
     onResult: (qr: QRCode) => void;
+    stream: MediaStream;
   }
 }
 
-const QrScanner = ({ onResult }: QrScanner.Props) => {
+const QrScanner = ({ onResult, stream }: QrScanner.Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logger = useLogger();
   useEffect(() => {
@@ -26,14 +27,6 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
         logger.error('Failed to get canvas context');
         return;
       }
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: {
-          facingMode: 'environment',
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-        },
-      });
       video.srcObject = stream;
       await video.play();
       const scan = function _scan() {

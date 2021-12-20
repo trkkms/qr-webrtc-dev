@@ -6,26 +6,32 @@ import { QRCode } from 'jsqr';
 import Chapter from 'src/components/common/chapter';
 import QrScanner from 'src/components/common/qr-scanner';
 import BackNextButton from 'src/components/common/back-next-button';
+import { useAtom } from 'jotai';
+import { cameraStreamAtom, useLogger } from 'src/states/app';
+import { getVideoStream } from 'src/common/media';
 
 const Guest01Offer1 = () => {
   const [halfSDP, setHalfSDP] = useState<number[] | undefined>(undefined);
   const updateStage = useUpdateAtom(guestStageAtom);
-  const onResult = useCallback((code: QRCode) => {
-    console.log('offer1 received:');
-    console.log(code.binaryData);
+  const logger = useLogger();
+  const onResult = useCallback(async (code: QRCode) => {
+    logger.info('offer1 received:');
+    setCameraStream(undefined);
     setHalfSDP(code.binaryData);
   }, []);
-  const onNext = useCallback(() => {
+  const [cameraStream, setCameraStream] = useAtom(cameraStreamAtom);
+  const onNext = useCallback(async () => {
     if (halfSDP == null) {
       return;
     }
     updateStage((prev) => {
       prev.push({ stage: 2, halfOffer: halfSDP });
     });
+    setCameraStream(await getVideoStream());
   }, [halfSDP]);
   return (
     <Chapter title="1.オファー受信(前半)">
-      {halfSDP == null && <QrScanner onResult={onResult} />}
+      {halfSDP == null && cameraStream && <QrScanner onResult={onResult} stream={cameraStream} />}
       {halfSDP && <BackNextButton nextTitle="次へ" onNext={onNext} />}
     </Chapter>
   );
