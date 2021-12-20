@@ -19,7 +19,6 @@ const Guest = () => {
     }
     audioRef.current.srcObject = stream;
     await audioRef.current.play();
-    audioRef.current.volume = 1.0;
   }, []);
   return (
     <main
