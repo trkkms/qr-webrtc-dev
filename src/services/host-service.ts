@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import { AppLogger } from 'src/states/app';
-import { attachStreamToDummyAudio, attachTrackEvent } from 'src/common/media';
+import { attachStreamToDummyAudio, attachTrackEvent, streamWithGain } from 'src/common/media';
 import { deferredPromise } from 'src/common/util';
 import { createHostSignalService } from 'src/services/signal-service';
 
@@ -19,13 +19,14 @@ export const initializeHost = async (
     audio: { latency: 0.01, echoCancellation: true },
   });
   attachStreamToDummyAudio(localStream);
+  const [changeVolume, baseStream] = streamWithGain(context, localStream);
   await playAudio(output.stream);
   const onMessage = createHostSignalService(peers, logger);
   const createPeer = async () => {
     const id = nanoid();
     const [setName, getName] = deferredPromise<string>();
     const peer = new RTCPeerConnection({ iceServers: [] });
-    const cloneStream = localStream.clone();
+    const cloneStream = baseStream.clone();
     attachStreamToDummyAudio(cloneStream);
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track, cloneStream);
@@ -89,6 +90,7 @@ export const initializeHost = async (
     createPeer,
     getPeer,
     getPeers,
+    changeVolume,
   };
 };
 

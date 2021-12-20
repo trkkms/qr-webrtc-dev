@@ -44,3 +44,15 @@ export const attachTrackEvent = (
     };
   }
 };
+
+export const streamWithGain = (context: AudioContext, stream: MediaStream): [(volume: number) => void, MediaStream] => {
+  const gainNode = context.createGain();
+  const dest = context.createMediaStreamDestination();
+  const src = context.createMediaStreamSource(stream);
+  src.connect(gainNode);
+  gainNode.connect(dest);
+  const changeVolume = (volume: number) => {
+    gainNode.gain.setValueAtTime(volume, context.currentTime);
+  };
+  return [changeVolume, dest.stream];
+};

@@ -6,6 +6,7 @@ import AudioControl from 'src/components/common/audio-control';
 import { useLogger } from 'src/states/app';
 import { GuestService } from 'src/services/guest-service';
 import GuestStages from 'src/components/stages/guest-stages';
+import VolumeHandler from 'src/components/common/volume-handler';
 
 const Guest = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -31,6 +32,7 @@ const Guest = () => {
       {service == null && <Guest00Init setService={setService} playAudio={playAudio} />}
       {service && <GuestStages service={service} />}
       <AudioControl audioRef={audioRef} />
+      {service && <VolumeHandler service={service} />}
     </main>
   );
 };

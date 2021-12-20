@@ -6,6 +6,7 @@ import AudioControl from 'src/components/common/audio-control';
 import { useLogger } from 'src/states/app';
 import { HostService, HostToGuestPeer } from 'src/services/host-service';
 import HostStages from 'src/components/stages/host-stages';
+import VolumeHandler from 'src/components/common/volume-handler';
 
 const Host = () => {
   const [service, setService] = useState<HostService>();
@@ -34,6 +35,7 @@ const Host = () => {
         <HostStages service={service} peer={currentPeer} setCurrentPeer={setCurrentPeer} />
       )}
       <AudioControl audioRef={audioRef} />
+      {service && <VolumeHandler service={service} />}
     </main>
   );
 };

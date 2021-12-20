@@ -1,5 +1,5 @@
 import { AppLogger } from 'src/states/app';
-import { attachStreamToDummyAudio, attachTrackEvent } from 'src/common/media';
+import { attachStreamToDummyAudio, attachTrackEvent, streamWithGain } from 'src/common/media';
 import { deferredPromise } from 'src/common/util';
 import { createGuestSignalService } from 'src/services/signal-service';
 
@@ -23,12 +23,14 @@ export const initializeGuest = async (
     audio: { latency: 0.01, echoCancellation: true },
   });
   attachStreamToDummyAudio(localStream);
+  const [changeVolume, baseStream] = streamWithGain(context, localStream);
+  attachStreamToDummyAudio(baseStream);
   await playAudio(output.stream);
   const [setChannel, getChannel] = deferredPromise<RTCDataChannel>();
   const [setHost, getHost] = deferredPromise<RTCPeerConnection>();
   const createHostPeer = async () => {
     const peer = new RTCPeerConnection({ iceServers: [] });
-    const cloneStream = localStream.clone();
+    const cloneStream = baseStream.clone();
     attachStreamToDummyAudio(cloneStream);
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track, cloneStream);
@@ -67,7 +69,7 @@ export const initializeGuest = async (
     };
   };
   const preparePeer = (peer: RTCPeerConnection) => {
-    const cloneStream = localStream.clone();
+    const cloneStream = baseStream.clone();
     attachStreamToDummyAudio(cloneStream);
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track, cloneStream);
@@ -76,7 +78,7 @@ export const initializeGuest = async (
   };
   const signalService = createGuestSignalService(guestName, getChannel, preparePeer, logger, onStateChange);
   const close = async () => (await getHost()).close();
-  return { createAnswer, setOnConnect, close, signalService, createHostPeer };
+  return { createAnswer, setOnConnect, close, signalService, createHostPeer, changeVolume };
 };
 
 export type GuestService = Awaited<ReturnType<typeof initializeGuest>>;

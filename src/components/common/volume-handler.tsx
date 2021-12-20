@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect } from 'react';
-import { css } from '@emotion/react';
 import { HostService } from 'src/services/host-service';
 import { GuestService } from 'src/services/guest-service';
 import { volumeAtom } from 'src/states/app';
@@ -14,7 +13,9 @@ namespace VolumeHandler {
 
 const VolumeHandler = ({ service }: VolumeHandler.Props) => {
   const volumes = useAtomValue(volumeAtom);
-  useEffect(() => {}, [volumes.mic.volume, volumes.mic.muted]);
+  useEffect(() => {
+    service.changeVolume(volumes.mic.muted ? 0 : volumes.mic.volume);
+  }, [volumes.mic.volume, volumes.mic.muted]);
   return <></>;
 };
 
