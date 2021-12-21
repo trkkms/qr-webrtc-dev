@@ -6,6 +6,7 @@ import { guestStageAtom } from 'src/states/guest';
 
 const Guest04TryConnect = () => {
   const updateStage = useUpdateAtom(guestStageAtom);
+  console.log('here');
   useEffect(() => {
     updateStage(() => {
       return [{ stage: 5 }];

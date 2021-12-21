@@ -35,10 +35,10 @@ const Host02Answer1 = () => {
     if (halfSDP == null) {
       return;
     }
-    updateStage(async (prev) => {
+    setCameraStream(await getVideoStream());
+    updateStage((prev) => {
       prev.push({ stage: 3, halfAnswer: halfSDP });
     });
-    setCameraStream(await getVideoStream());
   }, [halfSDP]);
   return (
     <Chapter title="2.アンサー受信(前半)">

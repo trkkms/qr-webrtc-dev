@@ -32,10 +32,10 @@ const Host01Offer = React.memo(function Host01({ stage }: Host0102Offer.Props) {
     if (part === 1) {
       setPart(2);
     } else {
+      setCameraStream(await getVideoStream());
       updateStage((prev) => {
         prev.push({ stage: 2 });
       });
-      setCameraStream(await getVideoStream());
     }
   }, [part]);
   const title = part === 1 ? '1.オファー(前半)' : '1.オファー(後半)';

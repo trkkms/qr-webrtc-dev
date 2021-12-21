@@ -26,7 +26,7 @@ const Guest02Offer2 = ({ stage, service }: Guest02Offer2.Props) => {
   const onResult = useCallback(async (code: QRCode) => {
     logger.info('offer2 received:');
     setCameraStream(undefined);
-    const sdp = inflate(new Uint8Array([...stage.halfOffer.slice(5), ...code.binaryData.slice(5)]));
+    const sdp = inflate(new Uint8Array([...stage.halfOffer, ...code.binaryData]));
     setOffer(sdp);
     if (sdp != undefined) {
       setOffer(sdp);

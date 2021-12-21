@@ -24,10 +24,10 @@ const Guest01Offer1 = () => {
     if (halfSDP == null) {
       return;
     }
+    setCameraStream(await getVideoStream());
     updateStage((prev) => {
       prev.push({ stage: 2, halfOffer: halfSDP });
     });
-    setCameraStream(await getVideoStream());
   }, [halfSDP]);
   return (
     <Chapter title="1.オファー受信(前半)">

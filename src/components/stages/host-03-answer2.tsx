@@ -24,7 +24,7 @@ const Host03Answer2 = ({ stage }: Host03Answer2.Props) => {
   const onResult = useCallback((code: QRCode) => {
     logger.info('answer2 received:');
     setCameraStream(undefined);
-    const sdp = inflate(new Uint8Array([...stage.halfAnswer.slice(5), ...code.binaryData.slice(5)]));
+    const sdp = inflate(new Uint8Array([...stage.halfAnswer, ...code.binaryData]));
     if (sdp != undefined) {
       setSDP(sdp);
       updateStage((prev) => {

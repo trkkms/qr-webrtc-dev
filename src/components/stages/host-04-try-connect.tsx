@@ -18,6 +18,7 @@ namespace Host04TryConnect {
 const Host04TryConnect = ({ stage, peer, service }: Host04TryConnect.Props) => {
   const logger = useLogger();
   const updateStage = useUpdateAtom(hostStageAtom);
+  console.log('here');
   useEffect(() => {
     const f = async () => {
       await peer.connect(stage.sdp);

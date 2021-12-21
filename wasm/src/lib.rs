@@ -3,8 +3,9 @@ mod utils;
 use flate2::read::DeflateDecoder;
 use flate2::write::DeflateEncoder;
 use flate2::Compression;
+use lzma_rs::lzma2_compress;
 use qrcode_generator::{to_svg_to_string, QrCodeEcc};
-use std::io::{Read, Write};
+use std::io::{BufRead, BufReader, Read, Write};
 use wasm_bindgen::prelude::*;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
@@ -36,12 +37,19 @@ pub fn compress(s: &str) -> Option<Vec<u8>> {
 }
 
 #[wasm_bindgen]
+pub fn compress_with_lzma2(s: &str) -> Option<Vec<u8>> {
+    let mut r: BufReader<&[u8]> = BufReader::new(s.as_bytes());
+    let mut w: Vec<u8> = Vec::new();
+    if let Ok(_) = lzma2_compress(&mut r, &mut w) {
+        Some(w)
+    } else {
+        None
+    }
+}
+
+#[wasm_bindgen]
 pub fn into_svg(input: &[u8], size: usize) -> Option<String> {
-    let mut e = DeflateEncoder::new(Vec::new(), Compression::best());
-    e.write_all(input)
-        .ok()
-        .and_then(|_| e.finish().ok())
-        .and_then(|bytes| to_svg_to_string(bytes, QrCodeEcc::Low, size, None::<&str>).ok())
+    to_svg_to_string(input, QrCodeEcc::Low, size, None::<&str>).ok()
 }
 
 #[wasm_bindgen]
