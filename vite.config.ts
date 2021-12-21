@@ -5,7 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/qr-webrtc/',
+  base: '/qr-webrtc-dev/',
   plugins: [
     react(),
     VitePWA({
@@ -14,8 +14,8 @@ export default defineConfig({
         name: 'QR WebRTC',
         short_name: 'QRTC',
         display: 'standalone',
-        scope: '/qr-webrtc/',
-        start_url: '/qr-webrtc/',
+        scope: '/qr-webrtc-dev/',
+        start_url: '/qr-webrtc-dev/',
         icons: [
           { src: 'icons/48x48.png', sizes: '48x48', type: 'image/png', purpose: 'any' },
           { src: 'icons/48x48.png', sizes: '144x144', type: 'image/png', purpose: 'any' },

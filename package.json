@@ -1,5 +1,5 @@
 {
-  "name": "qr-webrtc",
+  "name": "qr-webrtc-dev",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
