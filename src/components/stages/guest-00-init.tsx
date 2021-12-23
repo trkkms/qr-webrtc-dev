@@ -78,10 +78,10 @@ const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
               width: '14rem',
             })}
             onClick={async () => {
+              setCameraStream(await getVideoStream());
               const service = await initializeGuest(playAudio, logger, name, onStateChange);
               setService(service);
               setStart(true);
-              setCameraStream(await getVideoStream());
               updateStages((stages) => {
                 stages.push({ stage: 1 });
               });
