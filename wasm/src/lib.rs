@@ -3,7 +3,6 @@ mod utils;
 use flate2::read::DeflateDecoder;
 use flate2::write::DeflateEncoder;
 use flate2::Compression;
-use lzma_rs::lzma2_compress;
 use qrcode_generator::{to_svg_to_string, QrCodeEcc};
 use std::io::{BufRead, BufReader, Read, Write};
 use wasm_bindgen::prelude::*;
@@ -34,17 +33,6 @@ pub fn greet() {
 pub fn compress(s: &str) -> Option<Vec<u8>> {
     let mut e = DeflateEncoder::new(Vec::new(), Compression::best());
     e.write_all(s.as_bytes()).ok().and_then(|_| e.finish().ok())
-}
-
-#[wasm_bindgen]
-pub fn compress_with_lzma2(s: &str) -> Option<Vec<u8>> {
-    let mut r: BufReader<&[u8]> = BufReader::new(s.as_bytes());
-    let mut w: Vec<u8> = Vec::new();
-    if let Ok(_) = lzma2_compress(&mut r, &mut w) {
-        Some(w)
-    } else {
-        None
-    }
 }
 
 #[wasm_bindgen]

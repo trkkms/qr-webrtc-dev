@@ -9,11 +9,6 @@ export function greet(): void;
 */
 export function compress(s: string): Uint8Array | undefined;
 /**
-* @param {string} s
-* @returns {Uint8Array | undefined}
-*/
-export function compress_with_lzma2(s: string): Uint8Array | undefined;
-/**
 * @param {Uint8Array} input
 * @param {number} size
 * @returns {string | undefined}
@@ -34,7 +29,6 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly greet: () => void;
   readonly compress: (a: number, b: number, c: number) => void;
-  readonly compress_with_lzma2: (a: number, b: number, c: number) => void;
   readonly into_svg: (a: number, b: number, c: number, d: number) => void;
   readonly inflate: (a: number, b: number, c: number) => void;
   readonly foo: () => void;

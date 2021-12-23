@@ -3,7 +3,6 @@
 export const memory: WebAssembly.Memory;
 export function greet(): void;
 export function compress(a: number, b: number, c: number): void;
-export function compress_with_lzma2(a: number, b: number, c: number): void;
 export function into_svg(a: number, b: number, c: number, d: number): void;
 export function inflate(a: number, b: number, c: number): void;
 export function foo(): void;

@@ -42,6 +42,7 @@ const Host00Init = ({ setService, setCurrentPeer, playAudio }: Host00Init.Props)
           setStart(true);
           setCurrentPeer(peer);
           updateStages((stages) => {
+            console.log('offer sdp:', peer.sdp);
             stages.push({ stage: 1, sdp: peer.sdp });
           });
         }}

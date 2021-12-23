@@ -33,6 +33,7 @@ const Guest02Offer2 = ({ stage, service }: Guest02Offer2.Props) => {
       await service.createHostPeer();
       const answer = await service.createAnswer(sdp);
       updateStage((prev) => {
+        console.log('answer sdp:', answer);
         prev.push({ stage: 3, sdp: answer });
       });
     }

@@ -18,6 +18,8 @@ export const useCompressedSDP = (
     return new Uint8Array(ary);
   }, compressDeps);
   return useMemo(() => {
+    console.log('original bytes', new Blob([sdp]).size);
+    console.log('compressed', compressed);
     return compressed == null
       ? undefined
       : part === 1
