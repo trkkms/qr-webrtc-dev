@@ -8,8 +8,7 @@ import { GuestService } from 'src/services/guest-service';
 import QrScanner from 'src/components/common/qr-scanner';
 import Chapter from 'src/components/common/chapter';
 import BackNextButton from 'src/components/common/back-next-button';
-import { useAtom } from 'jotai';
-import { cameraStreamAtom, useLogger } from 'src/states/app';
+import { useLogger } from 'src/states/app';
 
 namespace Guest02Offer2 {
   export interface Props {
@@ -22,10 +21,8 @@ const Guest02Offer2 = ({ stage, service }: Guest02Offer2.Props) => {
   const [offer, setOffer] = useState<string | undefined>(undefined);
   const updateStage = useUpdateAtom(guestStageAtom);
   const logger = useLogger();
-  const [cameraStream, setCameraStream] = useAtom(cameraStreamAtom);
   const onResult = useCallback(async (code: QRCode) => {
     logger.info('offer2 received:');
-    setCameraStream(undefined);
     const sdp = inflate(new Uint8Array([...stage.halfOffer, ...code.binaryData]));
     setOffer(sdp);
     if (sdp != undefined) {
@@ -46,7 +43,7 @@ const Guest02Offer2 = ({ stage, service }: Guest02Offer2.Props) => {
   }, []);
   return (
     <Chapter title="2.オファー受信(後半)">
-      {offer == null && cameraStream && <QrScanner onResult={onResult} stream={cameraStream} />}
+      {offer == null && <QrScanner onResult={onResult} />}
       <BackNextButton backTitle="戻る" onBack={onBack} />
     </Chapter>
   );

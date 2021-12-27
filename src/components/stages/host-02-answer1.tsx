@@ -19,11 +19,9 @@ namespace Host02Answer1 {
 const Host02Answer1 = () => {
   const [halfSDP, setHalfSDP] = useState<number[] | undefined>(undefined);
   const updateStage = useUpdateAtom(hostStageAtom);
-  const [cameraStream, setCameraStream] = useAtom(cameraStreamAtom);
   const logger = useLogger();
   const onResult = useCallback((code) => {
     logger.info('answer1 received:');
-    setCameraStream(undefined);
     setHalfSDP(code.binaryData);
   }, []);
   const onBack = useCallback(() => {
@@ -35,14 +33,13 @@ const Host02Answer1 = () => {
     if (halfSDP == null) {
       return;
     }
-    setCameraStream(await getVideoStream());
     updateStage((prev) => {
       prev.push({ stage: 3, halfAnswer: halfSDP });
     });
   }, [halfSDP]);
   return (
     <Chapter title="2.アンサー受信(前半)">
-      {halfSDP == null && cameraStream && <QrScanner onResult={onResult} stream={cameraStream} />}
+      {halfSDP == null && <QrScanner onResult={onResult} />}
       <BackNextButton
         backTitle="戻る"
         onBack={onBack}

@@ -16,22 +16,19 @@ const Guest01Offer1 = () => {
   const logger = useLogger();
   const onResult = useCallback(async (code: QRCode) => {
     logger.info('offer1 received:');
-    setCameraStream(undefined);
     setHalfSDP(code.binaryData);
   }, []);
-  const [cameraStream, setCameraStream] = useAtom(cameraStreamAtom);
   const onNext = useCallback(async () => {
     if (halfSDP == null) {
       return;
     }
-    setCameraStream(await getVideoStream());
     updateStage((prev) => {
       prev.push({ stage: 2, halfOffer: halfSDP });
     });
   }, [halfSDP]);
   return (
     <Chapter title="1.オファー受信(前半)">
-      {halfSDP == null && cameraStream && <QrScanner onResult={onResult} stream={cameraStream} />}
+      {halfSDP == null && <QrScanner onResult={onResult} />}
       {halfSDP && <BackNextButton nextTitle="次へ" onNext={onNext} />}
     </Chapter>
   );

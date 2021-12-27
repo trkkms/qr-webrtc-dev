@@ -1,21 +1,27 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import jsQR, { QRCode } from 'jsqr';
 import { useLogger } from 'src/states/app';
 import { css } from '@emotion/react';
+import { getVideoStream } from 'src/common/media';
+import { useTheme } from 'src/theme';
 
 namespace QrScanner {
   export interface Props {
     onResult: (qr: QRCode) => void;
-    stream: MediaStream;
   }
 }
 
-const QrScanner = ({ onResult, stream }: QrScanner.Props) => {
+const QrScanner = ({ onResult }: QrScanner.Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logger = useLogger();
+  const [stream, setStream] = useState<MediaStream | undefined>(undefined);
+  const { color } = useTheme();
   useEffect(() => {
     const f = async () => {
+      if (!stream) {
+        return;
+      }
       const video = document.createElement('video');
       const canvas = canvasRef.current;
       if (canvas == null) {
@@ -72,10 +78,24 @@ const QrScanner = ({ onResult, stream }: QrScanner.Props) => {
         }
       });
     };
-  }, []);
+  }, [stream]);
   return (
     <div css={css({ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' })}>
-      <canvas css={css({ width: '80%' })} ref={canvasRef} />
+      {stream && <canvas css={css({ width: '80%' })} ref={canvasRef} />}
+      <button
+        css={css({
+          width: '100%',
+          height: '2rem',
+          border: 'none',
+          outline: 'none',
+          background: color.primary.main,
+        })}
+        onClick={() => {
+          getVideoStream().then((stream) => {
+            setStream(stream);
+          });
+        }}
+      />
     </div>
   );
 };

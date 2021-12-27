@@ -20,7 +20,6 @@ const Host01Offer = React.memo(function Host01({ stage }: Host0102Offer.Props) {
   const updateStage = useUpdateAtom(hostStageAtom);
   const [part, setPart] = useState<1 | 2>(1);
   const logger = useLogger();
-  const setCameraStream = useUpdateAtom(cameraStreamAtom);
   const onBack = useCallback(() => {
     if (part === 2) {
       setPart(1);
@@ -32,7 +31,6 @@ const Host01Offer = React.memo(function Host01({ stage }: Host0102Offer.Props) {
     if (part === 1) {
       setPart(2);
     } else {
-      setCameraStream(await getVideoStream());
       updateStage((prev) => {
         prev.push({ stage: 2 });
       });

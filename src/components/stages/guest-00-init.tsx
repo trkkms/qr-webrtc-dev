@@ -24,7 +24,6 @@ const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
   const [name, setGuestName] = useAtom(guestNameAtom);
   const updateStages = useUpdateAtom(guestStageAtom);
   const onStateChange = useUpdateConnectionState();
-  const setCameraStream = useUpdateAtom(cameraStreamAtom);
   return (
     <div
       css={css({
@@ -78,7 +77,6 @@ const Guest00Init = ({ setService, playAudio }: Guest00Init.Props) => {
               width: '14rem',
             })}
             onClick={async () => {
-              setCameraStream(await getVideoStream());
               const service = await initializeGuest(playAudio, logger, name, onStateChange);
               setService(service);
               setStart(true);
