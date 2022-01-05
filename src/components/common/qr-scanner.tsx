@@ -23,7 +23,10 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
       if (!stream) {
         return;
       }
-      const video = document.createElement('video');
+      const video = videoRef.current;
+      if (!video) {
+        return;
+      }
       const canvas = canvasRef.current;
       if (canvas == null) {
         logger.error('Failed to get canvas element.');
@@ -34,8 +37,6 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
         logger.error('Failed to get canvas context');
         return;
       }
-      video.srcObject = stream;
-      await video.play();
       const scan = function _scan() {
         const canvas = canvasRef.current;
         if (canvas == null) {
@@ -96,7 +97,11 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
           getVideoStream().then((stream) => {
             logger.info('stream acquired.');
             if (videoRef.current) {
+              logger.info('attached to video.');
               videoRef.current.srcObject = stream;
+              videoRef.current.play().then(() => {
+                logger.info('video started');
+              });
             }
             setStream(stream);
           });
