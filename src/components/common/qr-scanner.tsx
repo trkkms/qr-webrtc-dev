@@ -84,7 +84,7 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
   return (
     <div css={css({ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' })}>
       {stream && <canvas css={css({ width: '80%' })} ref={canvasRef} />}
-      <video css={css({ display: 'none' })} ref={videoRef} />
+      <video css={css({ display: 'block', width: '80%' })} ref={videoRef} />
       <button
         css={css({
           width: '100%',
