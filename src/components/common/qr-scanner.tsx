@@ -14,6 +14,7 @@ namespace QrScanner {
 
 const QrScanner = ({ onResult }: QrScanner.Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const logger = useLogger();
   const [stream, setStream] = useState<MediaStream | undefined>(undefined);
   const { color } = useTheme();
@@ -82,6 +83,7 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
   return (
     <div css={css({ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' })}>
       {stream && <canvas css={css({ width: '80%' })} ref={canvasRef} />}
+      <video css={css({ display: 'none' })} ref={videoRef} />
       <button
         css={css({
           width: '100%',
@@ -92,6 +94,10 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
         })}
         onClick={() => {
           getVideoStream().then((stream) => {
+            logger.info('stream acquired.');
+            if (videoRef.current) {
+              videoRef.current.srcObject = stream;
+            }
             setStream(stream);
           });
         }}

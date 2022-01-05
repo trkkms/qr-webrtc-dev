@@ -6,9 +6,8 @@ import { QRCode } from 'jsqr';
 import Chapter from 'src/components/common/chapter';
 import QrScanner from 'src/components/common/qr-scanner';
 import BackNextButton from 'src/components/common/back-next-button';
-import { useAtom } from 'jotai';
-import { cameraStreamAtom, useLogger } from 'src/states/app';
-import { getVideoStream } from 'src/common/media';
+
+import { useLogger } from 'src/states/app';
 
 const Guest01Offer1 = () => {
   const [halfSDP, setHalfSDP] = useState<number[] | undefined>(undefined);
