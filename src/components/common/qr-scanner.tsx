@@ -12,6 +12,8 @@ namespace QrScanner {
   }
 }
 
+let flag = false;
+
 const QrScanner = ({ onResult }: QrScanner.Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -43,6 +45,9 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
           return;
         }
         if (video.readyState !== video.HAVE_ENOUGH_DATA) {
+          setTimeout(() => {
+            _scan();
+          }, 200);
           return;
         }
         canvas.width = video.videoWidth;
@@ -82,31 +87,41 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
     };
   }, [stream]);
   return (
-    <div css={css({ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' })}>
-      {stream && <canvas css={css({ width: '80%' })} ref={canvasRef} />}
-      <video css={css({ display: 'block', width: '80%' })} ref={videoRef} autoPlay muted playsInline />
-      <button
-        css={css({
-          width: '100%',
-          height: '2rem',
-          border: 'none',
-          outline: 'none',
-          background: color.primary.main,
-        })}
-        onClick={() => {
-          getVideoStream().then((stream) => {
-            logger.info('stream acquired.');
-            if (videoRef.current) {
-              logger.info('attached to video.');
-              videoRef.current.srcObject = stream;
-              videoRef.current.play().then(() => {
-                logger.info('video started');
+    <div
+      css={css({ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' })}
+    >
+      <video css={css({ display: 'block' })} ref={videoRef} autoPlay muted playsInline />
+      <div css={css({ width: '100%' })}>
+        <canvas css={css({ display: 'none', width: '100%' })} ref={canvasRef} />
+      </div>
+      <div css={css({ width: '100%', display: 'flex', justifyContent: 'center' })}>
+        {!stream && (
+          <button
+            css={css({
+              width: '50%',
+              height: '2rem',
+              border: 'none',
+              outline: 'none',
+              background: color.primary.main,
+            })}
+            onClick={() => {
+              getVideoStream().then((stream) => {
+                logger.info('stream acquired.');
+                if (videoRef.current) {
+                  logger.info('attached to video.');
+                  videoRef.current.srcObject = stream;
+                  videoRef.current.play().then(() => {
+                    logger.info('video started');
+                  });
+                }
+                setStream(stream);
               });
-            }
-            setStream(stream);
-          });
-        }}
-      />
+            }}
+          >
+            カメラを起動する
+          </button>
+        )}
+      </div>
     </div>
   );
 };
