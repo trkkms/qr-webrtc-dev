@@ -9,16 +9,17 @@ interface ControllerItemProp {
   onMuteClick: () => void;
   setValue: (value: string) => void;
   icon: string;
+  unlock: boolean;
 }
 
-const ControllerItem = ({ value, setValue, onMuteClick, icon }: ControllerItemProp) => {
+const ControllerItem = ({ value, setValue, onMuteClick, icon, unlock }: ControllerItemProp) => {
   return (
     <div css={css({ display: 'block' })}>
       <input
         type="range"
-        step={0.01}
+        step={unlock ? 0.1 : 0.01}
         min={0.0}
-        max={1.0}
+        max={unlock ? 8.0 : 1.0}
         value={value}
         onChange={(e) => {
           setValue(e.currentTarget.value);
@@ -53,6 +54,7 @@ const VolumeController = () => {
             });
           }}
           icon={volumes.mic.muted ? '🔕' : '🎤'}
+          unlock={false}
         />
       </div>
       <div css={css({ display: 'block' })}>
@@ -69,6 +71,7 @@ const VolumeController = () => {
             });
           }}
           icon={volumes.speaker.muted ? '🔇' : '🔊'}
+          unlock={volumes.speaker.unlockLimit}
         />
       </div>
     </div>

@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { GuestService } from 'src/services/guest-service';
 import { useConnectionStateDetection } from 'src/common/hooks/util';
 import Chapter from 'src/components/common/chapter';
+import VolumeUnlock from 'src/components/common/navigations/volume-unlock';
 
 namespace Guest05ConnectionList {
   export interface Props {
@@ -22,6 +23,7 @@ const Guest05ConnectionList = ({ service }: Guest05ConnectionList.Props) => {
           <li key={peer.id}>{`${peer.id.slice(0, 6)} ${peer.name}`}</li>
         ))}
       </ol>
+      <VolumeUnlock />
     </Chapter>
   );
 };

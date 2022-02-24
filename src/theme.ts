@@ -14,6 +14,7 @@ interface Color {
   text: string;
   primary: ColorItemWithText;
   secondary: ColorItemWithText;
+  alert: ColorItemWithText;
 }
 
 interface Theme {
@@ -39,11 +40,18 @@ export const useTheme = (): Theme => {
     dark: '#c9bc1f',
     text: '#202020',
   };
+  const alert = {
+    main: '#ff8a65',
+    light: '#ffbb93',
+    dark: '#c75b39',
+    text: '#202020',
+  };
   const text = '#E8E8E8';
   const color = {
     background,
     primary: mode === 'host' ? host : guest,
     secondary: mode === 'host' ? guest : host,
+    alert,
     text,
   };
   return {

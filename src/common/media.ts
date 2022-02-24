@@ -15,6 +15,7 @@ export const attachTrackEvent = (
   dest: MediaStreamAudioDestinationNode,
   logger: AppLogger,
   playAudio: (stream: MediaStream) => Promise<void>,
+  recordDest?: MediaStreamAudioDestinationNode,
 ): void => {
   if ('ontrack' in peer) {
     logger.info('set ontrack event');

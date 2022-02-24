@@ -14,11 +14,17 @@ export const initializeHost = async (
   const peers = new Map<string, Peer>();
   const context = new AudioContext();
   const output = context.createMediaStreamDestination();
+  const recordOutput = context.createMediaStreamDestination();
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: false,
     audio: { latency: 0.01, echoCancellation: true },
   });
+  const [setRecordStream, getRecordStream] = deferredPromise<MediaStreamAudioSourceNode>();
   attachStreamToDummyAudio(localStream);
+  const localRecordStream = localStream.clone();
+  attachStreamToDummyAudio(localRecordStream);
+  const localRecordSrc = context.createMediaStreamSource(localRecordStream);
+  localRecordSrc.connect(recordOutput);
   const [changeVolume, baseStream] = streamWithGain(context, localStream);
   await playAudio(output.stream);
   const onMessage = createHostSignalService(peers, logger);
@@ -85,12 +91,60 @@ export const initializeHost = async (
     return peers.get(id);
   };
   const getPeers = (): Map<string, Peer> => peers;
+  const startRecording = () => {
+    const cloneStream = recordOutput.stream.clone();
+    attachStreamToDummyAudio(cloneStream);
+    const src = context.createMediaStreamSource(cloneStream);
+    src.connect(recordOutput);
+    const stream = recordOutput.stream;
+    setRecordStream(src);
+    const recorder = new MediaRecorder(stream, { mimeType: 'audio/mpeg', audioBitsPerSecond: 64000 });
+    const chunks: Blob[] = [];
+    recorder.ondataavailable = (evt) => {
+      chunks.push(evt.data);
+    };
+    recorder.start(1000);
+    const stopRecording = () => {
+      recorder.pause();
+    };
+    const save = () => {
+      const blob = new Blob(chunks, { type: 'audio/mpeg' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.download = 'recorded.mp3';
+      a.href = url;
+      a.click();
+    };
+    const clear = async () => {
+      if (recorder.state === 'paused' || recorder.state === 'recording') {
+        recorder.stop();
+        const src = await getRecordStream();
+        src.disconnect(recordOutput);
+      }
+    };
+    const pause = () => {
+      recorder.pause();
+    };
+    const resume = () => {
+      recorder.resume();
+    };
+    const getRecordState = () => recorder.state;
+    return {
+      stopRecording,
+      save,
+      clear,
+      getRecordState,
+      pause,
+      resume,
+    };
+  };
 
   return {
     createPeer,
     getPeer,
     getPeers,
     changeVolume,
+    startRecording,
   };
 };
 

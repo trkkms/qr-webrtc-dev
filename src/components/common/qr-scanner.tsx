@@ -90,7 +90,7 @@ const QrScanner = ({ onResult }: QrScanner.Props) => {
     <div
       css={css({ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' })}
     >
-      <video css={css({ display: 'block' })} ref={videoRef} autoPlay muted playsInline />
+      <video css={css({ display: 'block', width: '80%' })} ref={videoRef} autoPlay muted playsInline />
       <div css={css({ width: '100%' })}>
         <canvas css={css({ display: 'none', width: '100%' })} ref={canvasRef} />
       </div>
