@@ -14,6 +14,10 @@ export const initializeHost = async (
   const peers = new Map<string, Peer>();
   const context = new AudioContext();
   const output = context.createMediaStreamDestination();
+  const playNode = context.createMediaStreamDestination();
+  const gainNode = context.createGain();
+  output.connect(gainNode);
+  gainNode.connect(playNode);
   const recordOutput = context.createMediaStreamDestination();
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: false,
@@ -26,7 +30,13 @@ export const initializeHost = async (
   const localRecordSrc = context.createMediaStreamSource(localRecordStream);
   localRecordSrc.connect(recordOutput);
   const [changeVolume, baseStream] = streamWithGain(context, localStream);
-  await playAudio(output.stream);
+  const changeSpeakerVolume = async (volume: number) => {
+    if (volume <= 1.0) {
+      return;
+    }
+    gainNode.gain.value = volume;
+  };
+  await playAudio(playNode.stream);
   const onMessage = createHostSignalService(peers, logger);
   const createPeer = async () => {
     const id = nanoid();
@@ -37,7 +47,7 @@ export const initializeHost = async (
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track, cloneStream);
     }
-    attachTrackEvent(peer, context, output, logger, playAudio);
+    attachTrackEvent(peer, context, output, playNode, logger, playAudio);
     peer.onconnectionstatechange = () => {
       logger.info(`${id.slice(0, 5)} / connection state change: ${peer.connectionState}`);
       onStateChange();
@@ -147,6 +157,7 @@ export const initializeHost = async (
     getPeers,
     changeVolume,
     startRecording,
+    changeSpeakerVolume,
   };
 };
 

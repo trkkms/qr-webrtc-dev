@@ -13,6 +13,7 @@ export const attachTrackEvent = (
   peer: RTCPeerConnection,
   context: AudioContext,
   dest: MediaStreamAudioDestinationNode,
+  playNode: MediaStreamAudioDestinationNode,
   logger: AppLogger,
   playAudio: (stream: MediaStream) => Promise<void>,
   recordDest?: MediaStreamAudioDestinationNode,
@@ -26,7 +27,7 @@ export const attachTrackEvent = (
         attachStreamToDummyAudio(stream);
         const src = context.createMediaStreamSource(stream);
         src.connect(dest);
-        playAudio(dest.stream).then(() => {
+        playAudio(playNode.stream).then(() => {
           logger.info('update stream');
         });
       }
@@ -39,7 +40,7 @@ export const attachTrackEvent = (
       attachStreamToDummyAudio(ev.stream);
       const src = context.createMediaStreamSource(ev.stream);
       src.connect(dest);
-      playAudio(dest.stream).then(() => {
+      playAudio(playNode.stream).then(() => {
         logger.info('update stream');
       });
     };

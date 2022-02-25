@@ -18,14 +18,24 @@ export const initializeGuest = async (
 ) => {
   const context = new AudioContext();
   const output = context.createMediaStreamDestination();
+  const playNode = context.createMediaStreamDestination();
+  const gainNode = context.createGain();
+  output.connect(gainNode);
+  gainNode.connect(playNode);
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: false,
     audio: { latency: 0.01, echoCancellation: true },
   });
   attachStreamToDummyAudio(localStream);
   const [changeVolume, baseStream] = streamWithGain(context, localStream);
+  const changeSpeakerVolume = async (volume: number) => {
+    if (volume <= 1.0) {
+      return;
+    }
+    gainNode.gain.value = volume;
+  };
   attachStreamToDummyAudio(baseStream);
-  await playAudio(output.stream);
+  await playAudio(playNode.stream);
   const [setChannel, getChannel] = deferredPromise<RTCDataChannel>();
   const [setHost, getHost] = deferredPromise<RTCPeerConnection>();
   const createHostPeer = async () => {
@@ -35,7 +45,7 @@ export const initializeGuest = async (
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track, cloneStream);
     }
-    attachTrackEvent(peer, context, output, logger, playAudio);
+    attachTrackEvent(peer, context, output, playNode, logger, playAudio);
     peer.onconnectionstatechange = () => {
       logger.info(`host connection state change: ${peer.connectionState}`);
     };
@@ -74,11 +84,11 @@ export const initializeGuest = async (
     for (const track of cloneStream.getTracks()) {
       peer.addTrack(track, cloneStream);
     }
-    attachTrackEvent(peer, context, output, logger, playAudio);
+    attachTrackEvent(peer, context, output, playNode, logger, playAudio);
   };
   const signalService = createGuestSignalService(guestName, getChannel, preparePeer, logger, onStateChange);
   const close = async () => (await getHost()).close();
-  return { createAnswer, setOnConnect, close, signalService, createHostPeer, changeVolume };
+  return { createAnswer, setOnConnect, close, signalService, createHostPeer, changeVolume, changeSpeakerVolume };
 };
 
 export type GuestService = Awaited<ReturnType<typeof initializeGuest>>;

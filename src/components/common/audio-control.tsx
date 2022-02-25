@@ -13,7 +13,8 @@ const AudioControl = ({ audioRef }: AudioControl.Props) => {
   const volumes = useAtomValue(volumeAtom);
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volumes.speaker.muted ? 0 : volumes.speaker.volume;
+      const volume = volumes.speaker.volume > 1.0 ? 1 : volumes.speaker.volume;
+      audioRef.current.volume = volumes.speaker.muted ? 0 : volume;
     }
   }, [volumes.speaker.volume, volumes.speaker.muted]);
   return (

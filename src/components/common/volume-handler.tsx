@@ -16,6 +16,9 @@ const VolumeHandler = ({ service }: VolumeHandler.Props) => {
   useEffect(() => {
     service.changeVolume(volumes.mic.muted ? 0 : volumes.mic.volume);
   }, [volumes.mic.volume, volumes.mic.muted]);
+  useEffect(() => {
+    service.changeSpeakerVolume(volumes.mic.muted ? 0 : volumes.mic.volume);
+  }, [volumes.speaker.volume, volumes.speaker.muted]);
   return <></>;
 };
 
