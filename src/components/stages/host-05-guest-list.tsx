@@ -66,63 +66,6 @@ const Host05GuestList = ({ service, setCurrentPeer }: Host05GuestList.Props) => 
           >
             新規接続
           </button>
-          <button
-            type="button"
-            css={css({
-              border: 'none',
-              outline: 'none',
-              padding: '0.5rem 1rem',
-              background: color.primary.main,
-            })}
-            onClick={() => {
-              if (recordController == undefined) {
-                const controller = service.startRecording();
-                setRecordController(controller);
-                return;
-              }
-              if (recordController.getRecordState() === 'paused') {
-                recordController.resume();
-              }
-              if (recordController.getRecordState() === 'recording') {
-                recordController.pause();
-              }
-            }}
-          >
-            {recordController ? '録音停止' : '録音開始'}
-          </button>
-          {recordController && (
-            <button
-              type="button"
-              css={css({
-                border: 'none',
-                outline: 'none',
-                padding: '0.5rem 1rem',
-                background: color.primary.main,
-              })}
-              onClick={() => {
-                recordController.clear();
-                setRecordController(undefined);
-              }}
-            >
-              クリア
-            </button>
-          )}
-          {recordController && recordController.getRecordState() === 'paused' && (
-            <button
-              type="button"
-              css={css({
-                border: 'none',
-                outline: 'none',
-                padding: '0.5rem 1rem',
-                background: color.primary.main,
-              })}
-              onClick={() => {
-                recordController.save();
-              }}
-            >
-              保存
-            </button>
-          )}
         </div>
 
         {peers.size > 0 && (
@@ -146,6 +89,67 @@ const Host05GuestList = ({ service, setCurrentPeer }: Host05GuestList.Props) => 
               </li>
             ))}
           </ol>
+        )}
+      </div>
+      <div css={css({ display: 'flex', justifyContent: 'center', width: '100%' })}>
+        <button
+          type="button"
+          css={css({
+            border: 'none',
+            outline: 'none',
+            padding: '0.5rem 1rem',
+            background: color.primary.main,
+          })}
+          onClick={() => {
+            if (recordController == undefined) {
+              const controller = service.startRecording();
+              setRecordController(controller);
+              return;
+            }
+            if (recordController.getRecordState() === 'paused') {
+              recordController.resume();
+              setRecordController({ ...recordController });
+            }
+            if (recordController.getRecordState() === 'recording') {
+              recordController.pause();
+              setRecordController({ ...recordController });
+            }
+          }}
+        >
+          {recordController ? '録音停止' : '録音開始'}
+        </button>
+        {recordController && (
+          <button
+            type="button"
+            css={css({
+              border: 'none',
+              outline: 'none',
+              padding: '0.5rem 1rem',
+              background: color.primary.main,
+            })}
+            onClick={() => {
+              recordController.clear();
+              setRecordController(undefined);
+            }}
+          >
+            クリア
+          </button>
+        )}
+        {recordController && recordController.getRecordState() === 'paused' && (
+          <button
+            type="button"
+            css={css({
+              border: 'none',
+              outline: 'none',
+              padding: '0.5rem 1rem',
+              background: color.primary.main,
+            })}
+            onClick={() => {
+              recordController.save();
+            }}
+          >
+            保存
+          </button>
         )}
       </div>
       <VolumeUnlock />

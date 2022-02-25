@@ -98,7 +98,8 @@ export const initializeHost = async (
     src.connect(recordOutput);
     const stream = recordOutput.stream;
     setRecordStream(src);
-    const recorder = new MediaRecorder(stream, { mimeType: 'audio/mpeg', audioBitsPerSecond: 64000 });
+    const [ext, mime] = MediaRecorder.isTypeSupported('audio/mp4') ? ['mp4', 'audio/mp4'] : ['webm', 'audio/webm'];
+    const recorder = new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 64000 });
     const chunks: Blob[] = [];
     recorder.ondataavailable = (evt) => {
       chunks.push(evt.data);
@@ -108,11 +109,12 @@ export const initializeHost = async (
       recorder.pause();
     };
     const save = () => {
-      const blob = new Blob(chunks, { type: 'audio/mpeg' });
+      const blob = new Blob(chunks, { type: mime });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.download = 'recorded.mp3';
+      a.download = `recorded.${ext}`;
       a.href = url;
+      a.target = '_blank';
       a.click();
     };
     const clear = async () => {

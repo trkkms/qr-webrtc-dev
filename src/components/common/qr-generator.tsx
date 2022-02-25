@@ -30,10 +30,7 @@ const QrGenerator = ({ src, cacheKey }: QrGenerator.Props) => {
     cache.current[cacheKey] = svg;
     return svg;
   }, [src, cacheKey]);
-  useEffect(() => {
-    console.log(`${cacheKey} generate:`);
-    console.log(src);
-  }, [src, cacheKey]);
+  useEffect(() => {}, [src, cacheKey]);
   return <div dangerouslySetInnerHTML={{ __html: qrRaw }} />;
 };
 

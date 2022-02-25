@@ -24,14 +24,12 @@ const Guest02Offer2 = ({ stage, service }: Guest02Offer2.Props) => {
   const onResult = useCallback(async (code: QRCode) => {
     logger.info('offer2 received:');
     const sdp = inflate(new Uint8Array([...stage.halfOffer, ...code.binaryData]));
-    console.log(sdp);
     setOffer(sdp);
     if (sdp != undefined) {
       setOffer(sdp);
       await service.createHostPeer();
       const answer = await service.createAnswer(sdp);
       updateStage((prev) => {
-        console.log('answer sdp:', answer);
         prev.push({ stage: 3, sdp: answer });
       });
     }
