@@ -17,11 +17,9 @@ export const initializeGuest = async (
   onStateChange: () => void,
 ) => {
   const context = new AudioContext();
-  const output = context.createMediaStreamDestination();
+  const output = context.createGain();
   const playNode = context.createMediaStreamDestination();
-  const gainNode = context.createGain();
-  output.connect(gainNode);
-  gainNode.connect(playNode);
+  output.connect(playNode);
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: false,
     audio: { latency: 0.01, echoCancellation: true },
@@ -32,7 +30,7 @@ export const initializeGuest = async (
     if (volume <= 1.0) {
       return;
     }
-    gainNode.gain.value = volume;
+    output.gain.value = volume;
   };
   attachStreamToDummyAudio(baseStream);
   await playAudio(playNode.stream);

@@ -13,11 +13,9 @@ export const initializeHost = async (
   type Peer = Awaited<ReturnType<typeof createPeer>>;
   const peers = new Map<string, Peer>();
   const context = new AudioContext();
-  const output = context.createMediaStreamDestination();
+  const output = context.createGain();
   const playNode = context.createMediaStreamDestination();
-  const gainNode = context.createGain();
-  output.connect(gainNode);
-  gainNode.connect(playNode);
+  output.connect(playNode);
   const recordOutput = context.createMediaStreamDestination();
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: false,
@@ -34,7 +32,7 @@ export const initializeHost = async (
     if (volume <= 1.0) {
       return;
     }
-    gainNode.gain.value = volume;
+    output.gain.value = volume;
   };
   await playAudio(playNode.stream);
   const onMessage = createHostSignalService(peers, logger);

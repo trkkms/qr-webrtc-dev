@@ -12,7 +12,7 @@ export const attachStreamToDummyAudio = (stream: MediaStream): void => {
 export const attachTrackEvent = (
   peer: RTCPeerConnection,
   context: AudioContext,
-  dest: MediaStreamAudioDestinationNode,
+  dest: AudioNode,
   playNode: MediaStreamAudioDestinationNode,
   logger: AppLogger,
   playAudio: (stream: MediaStream) => Promise<void>,
