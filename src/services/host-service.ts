@@ -29,10 +29,12 @@ export const initializeHost = async (
   localRecordSrc.connect(recordOutput);
   const [changeVolume, baseStream] = streamWithGain(context, localStream);
   const changeSpeakerVolume = async (volume: number) => {
+    logger.info(`speaker volume set to ${volume}`);
     if (volume <= 1.0) {
       return;
     }
     output.gain.value = volume;
+    await playAudio(playNode.stream);
   };
   await playAudio(playNode.stream);
   const onMessage = createHostSignalService(peers, logger);
