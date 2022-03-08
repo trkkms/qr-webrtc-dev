@@ -90,7 +90,7 @@ const Host05GuestList = ({ service, setCurrentPeer }: Host05GuestList.Props) => 
           </ol>
         )}
       </div>
-      <div css={css({ display: 'flex', justifyContent: 'center', width: '100%' })}>
+      <div css={css({ display: 'none', justifyContent: 'center', width: '100%' })}>
         <button
           type="button"
           css={css({
