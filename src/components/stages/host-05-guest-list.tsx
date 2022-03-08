@@ -7,7 +7,6 @@ import Chapter from 'src/components/common/chapter';
 import { useUpdateAtom } from 'jotai/utils';
 import { hostStageAtom } from 'src/states/host';
 import { useConnectionStateDetection } from 'src/common/hooks/util';
-import VolumeUnlock from 'src/components/common/navigations/volume-unlock';
 
 namespace Host05GuestList {
   export interface Props {
@@ -152,7 +151,6 @@ const Host05GuestList = ({ service, setCurrentPeer }: Host05GuestList.Props) => 
           </button>
         )}
       </div>
-      <VolumeUnlock />
     </Chapter>
   );
 };

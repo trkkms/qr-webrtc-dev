@@ -9,6 +9,8 @@ import { cameraStreamAtom, useLogger } from 'src/states/app';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { getVideoStream } from 'src/common/media';
+import StepBar from 'src/components/common/navigations/step-bar';
+import { HostTitles } from 'src/components/stages/host-stages';
 
 namespace Host02Answer1 {
   export interface Props {
@@ -38,15 +40,18 @@ const Host02Answer1 = () => {
     });
   }, [halfSDP]);
   return (
-    <Chapter title="2.アンサー受信(前半)">
-      {halfSDP == null && <QrScanner onResult={onResult} />}
-      <BackNextButton
-        backTitle="戻る"
-        onBack={onBack}
-        nextTitle={halfSDP != null ? '次へ' : undefined}
-        onNext={onNext}
-      />
-    </Chapter>
+    <>
+      <StepBar count={2} titles={HostTitles} />
+      <Chapter title="3.アンサー受信(前半)">
+        {halfSDP == null && <QrScanner onResult={onResult} />}
+        <BackNextButton
+          backTitle="戻る"
+          onBack={onBack}
+          nextTitle={halfSDP != null ? '次へ' : undefined}
+          onNext={onNext}
+        />
+      </Chapter>
+    </>
   );
 };
 

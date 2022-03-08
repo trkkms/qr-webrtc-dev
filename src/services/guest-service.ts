@@ -92,3 +92,4 @@ export const initializeGuest = async (
 };
 
 export type GuestService = Awaited<ReturnType<typeof initializeGuest>>;
+export const GuestTitles = ['受信(前半)', '受信(後半)', '送信(前半)', '送信(後半)'];

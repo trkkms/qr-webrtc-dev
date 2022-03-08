@@ -9,6 +9,9 @@ import Chapter from 'src/components/common/chapter';
 import { cameraStreamAtom, useLogger } from 'src/states/app';
 import { useCompressedSDP } from 'src/common/hooks/compress';
 import { getVideoStream } from 'src/common/media';
+import StepBar from 'src/components/common/navigations/step-bar';
+import { GuestTitles } from 'src/services/guest-service';
+import { HostTitles } from 'src/components/stages/host-stages';
 
 namespace Host0102Offer {
   export interface Props {
@@ -36,27 +39,35 @@ const Host01Offer = React.memo(function Host01({ stage }: Host0102Offer.Props) {
       });
     }
   }, [part]);
-  const title = part === 1 ? '1.オファー(前半)' : '1.オファー(後半)';
+  const title = part === 1 ? '1.オファー(前半)' : '2.オファー(後半)';
   const qrSrc = useCompressedSDP(stage.sdp, part, logger, [stage], [stage, part]);
   return (
-    <Chapter title={title}>
-      {qrSrc && (
-        <div css={css({ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '1rem' })}>
-          <QrGenerator src={qrSrc} cacheKey={`host-offer-${part}`} />
-        </div>
-      )}
-      <p css={css({ width: '100%', fontFamily: 'monospace', paddingLeft: '1rem' })}>
-        <span>接続するゲストに提示してください。</span>
-      </p>
-
-      {part === 2 && (
+    <>
+      <StepBar count={part - 1} titles={HostTitles} />
+      <Chapter title={title}>
+        {qrSrc && (
+          <div css={css({ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '1rem' })}>
+            <QrGenerator src={qrSrc} cacheKey={`host-offer-${part}`} />
+          </div>
+        )}
         <p css={css({ width: '100%', fontFamily: 'monospace', paddingLeft: '1rem' })}>
-          「次へ」を押すとカメラが起動します。
+          <span>接続するゲストに提示してください。</span>
         </p>
-      )}
 
-      <BackNextButton backTitle={part === 2 ? '戻る' : 'ゲスト一覧'} nextTitle="次へ" onBack={onBack} onNext={onNext} />
-    </Chapter>
+        {part === 2 && (
+          <p css={css({ width: '100%', fontFamily: 'monospace', paddingLeft: '1rem' })}>
+            「次へ」を押すとカメラが起動します。
+          </p>
+        )}
+
+        <BackNextButton
+          backTitle={part === 2 ? '戻る' : 'ゲスト一覧'}
+          nextTitle="次へ"
+          onBack={onBack}
+          onNext={onNext}
+        />
+      </Chapter>
+    </>
   );
 });
 

@@ -8,6 +8,8 @@ import { useUpdateAtom } from 'jotai/utils';
 import { Host03, hostStageAtom } from 'src/states/host';
 import { QRCode } from 'jsqr';
 import { useLogger } from 'src/states/app';
+import StepBar from 'src/components/common/navigations/step-bar';
+import { HostTitles } from 'src/components/stages/host-stages';
 
 namespace Host03Answer2 {
   export interface Props {
@@ -38,10 +40,13 @@ const Host03Answer2 = ({ stage }: Host03Answer2.Props) => {
     });
   }, []);
   return (
-    <Chapter title="3.アンサー受信(後半)">
-      {sdp == null && <QrScanner onResult={onResult} />}
-      <BackNextButton backTitle="戻る" onBack={onBack} />
-    </Chapter>
+    <>
+      <StepBar count={2} titles={HostTitles} />
+      <Chapter title="4.アンサー受信(後半)">
+        {sdp == null && <QrScanner onResult={onResult} />}
+        <BackNextButton backTitle="戻る" onBack={onBack} />
+      </Chapter>
+    </>
   );
 };
 

@@ -4,11 +4,12 @@ import { Guest02, guestStageAtom } from 'src/states/guest';
 import { useUpdateAtom } from 'jotai/utils';
 import { QRCode } from 'jsqr';
 import { inflate } from 'wasm';
-import { GuestService } from 'src/services/guest-service';
+import { GuestService, GuestTitles } from 'src/services/guest-service';
 import QrScanner from 'src/components/common/qr-scanner';
 import Chapter from 'src/components/common/chapter';
 import BackNextButton from 'src/components/common/back-next-button';
 import { useLogger } from 'src/states/app';
+import StepBar from 'src/components/common/navigations/step-bar';
 
 namespace Guest02Offer2 {
   export interface Props {
@@ -41,10 +42,13 @@ const Guest02Offer2 = ({ stage, service }: Guest02Offer2.Props) => {
     });
   }, []);
   return (
-    <Chapter title="2.オファー受信(後半)">
-      {offer == null && <QrScanner onResult={onResult} />}
-      <BackNextButton backTitle="戻る" onBack={onBack} />
-    </Chapter>
+    <>
+      <StepBar count={1} titles={GuestTitles} />
+      <Chapter title="2.オファー受信(後半)">
+        {offer == null && <QrScanner onResult={onResult} />}
+        <BackNextButton backTitle="戻る" onBack={onBack} />
+      </Chapter>
+    </>
   );
 };
 

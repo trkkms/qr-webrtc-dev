@@ -42,3 +42,4 @@ const HostStages = ({ service, peer, setCurrentPeer }: HostStages.Props) => {
 };
 
 export default HostStages;
+export const HostTitles = ['送信(前半)', '送信(後半)', '受信(前半)', '受信(後半)'];

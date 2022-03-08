@@ -43,7 +43,7 @@ const Host04TryConnect = ({ stage, peer, service }: Host04TryConnect.Props) => {
     });
   }, []);
   return (
-    <Chapter title="4. 接続中">
+    <Chapter title="5. 接続中">
       <p>接続中です...</p>
     </Chapter>
   );
