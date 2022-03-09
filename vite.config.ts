@@ -9,6 +9,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      workbox: {
+        globPatterns: ['*.{html,js,css,png}'],
+      },
       manifest: {
         lang: 'ja',
         name: 'QR WebRTC',
