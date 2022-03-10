@@ -10,8 +10,15 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      mode: 'development',
       workbox: {
-        globPatterns: ['*.{html,js,css,png}'],
+        globPatterns: ['**/*.{html,js,css,png,svg}'],
+        runtimeCaching: [
+          {
+            urlPattern: /.*\.(html|css|js|png|svg)/,
+            handler: 'CacheFirst',
+          },
+        ],
       },
       manifest: {
         lang: 'ja',
